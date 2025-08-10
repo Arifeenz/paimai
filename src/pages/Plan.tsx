@@ -55,7 +55,8 @@ const Plan = () => {
     try {
       const newItinerary = await createItinerary({
         name: itineraryName,
-        style: 'mixed'
+        style: 'mixed',
+        user_id: user.id  // เพิ่ม user_id เพื่อให้ผ่าน RLS policy
       });
 
       toast({

@@ -225,6 +225,7 @@ export const createItinerary = async (itinerary: {
   end_date?: string;
   budget?: number;
   style?: string;
+  user_id: string;  // เพิ่ม user_id เป็น required field
 }) => {
   const { data, error } = await supabase
     .from('itineraries')
