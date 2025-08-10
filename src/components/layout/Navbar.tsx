@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -17,12 +18,29 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Plane, User, LogOut, Settings } from 'lucide-react';
+import { Plane, User, LogOut, Settings, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getUserProfile } from '@/lib/queries';
 
 export const Navbar = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const [userProfile, setUserProfile] = useState<any>(null);
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (user) {
+        try {
+          const profile = await getUserProfile(user.id);
+          setUserProfile(profile);
+        } catch (error) {
+          console.error('Error loading user profile:', error);
+        }
+      }
+    };
+
+    loadUserProfile();
+  }, [user]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -79,6 +97,13 @@ export const Navbar = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
             )}
+            {userProfile?.role === 'admin' && (
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <Link to="/admin-dashboard">จัดการระบบ</Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            )}
           </NavigationMenuList>
         </NavigationMenu>
 
@@ -102,6 +127,14 @@ export const Navbar = () => {
                     <span>โปรไฟล์</span>
                   </Link>
                 </DropdownMenuItem>
+                {userProfile?.role === 'admin' && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin-dashboard" className="flex items-center">
+                      <Shield className="mr-2 h-4 w-4" />
+                      <span>จัดการระบบ</span>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild>
                   <Link to="/settings" className="flex items-center">
                     <Settings className="mr-2 h-4 w-4" />

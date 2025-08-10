@@ -33,7 +33,8 @@ const AdminDashboard = () => {
     destinations: [],
     activities: [],
     hotels: [],
-    places: []
+    places: [],
+    restaurants: []
   });
   const [loading, setLoading] = useState(true);
 
@@ -71,18 +72,20 @@ const AdminDashboard = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [destinations, activities, hotels, places] = await Promise.all([
+      const [destinations, activities, hotels, places, restaurants] = await Promise.all([
         supabase.from('destinations').select('*').order('created_at', { ascending: false }),
         supabase.from('activities').select('*, destinations(name)').order('created_at', { ascending: false }),
         supabase.from('hotels').select('*, destinations(name)').order('created_at', { ascending: false }),
-        supabase.from('places').select('*, destinations(name)').order('created_at', { ascending: false })
+        supabase.from('places').select('*, destinations(name)').order('created_at', { ascending: false }),
+        (supabase as any).from('restaurants').select('*').order('created_at', { ascending: false })
       ]);
 
       setData({
         destinations: destinations.data || [],
         activities: activities.data || [],
         hotels: hotels.data || [],
-        places: places.data || []
+        places: places.data || [],
+        restaurants: restaurants.data || []
       });
     } catch (error) {
       console.error('Error loading data:', error);
@@ -191,6 +194,11 @@ const AdminDashboard = () => {
                           ${item.price_per_night}/night
                         </span>
                       )}
+                      {item.price_range && (
+                        <span className="font-semibold text-primary">
+                          {item.price_range}
+                        </span>
+                      )}
                     </div>
                   </div>
                   
@@ -248,7 +256,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
           <Card className="travel-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -296,6 +304,18 @@ const AdminDashboard = () => {
               </div>
             </CardContent>
           </Card>
+
+          <Card className="travel-card">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Restaurants</p>
+                  <p className="text-2xl font-bold">{data.restaurants.length}</p>
+                </div>
+                <Users className="w-8 h-8 text-orange-500" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Content Management */}
@@ -305,11 +325,12 @@ const AdminDashboard = () => {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="destinations">Destinations</TabsTrigger>
                 <TabsTrigger value="activities">Activities</TabsTrigger>
                 <TabsTrigger value="hotels">Hotels</TabsTrigger>
                 <TabsTrigger value="places">Places</TabsTrigger>
+                <TabsTrigger value="restaurants">Restaurants</TabsTrigger>
               </TabsList>
               
               <TabsContent value="destinations" className="mt-6">
@@ -326,6 +347,10 @@ const AdminDashboard = () => {
               
               <TabsContent value="places" className="mt-6">
                 {renderTable(data.places, 'places')}
+              </TabsContent>
+
+              <TabsContent value="restaurants" className="mt-6">
+                {renderTable(data.restaurants, 'restaurants')}
               </TabsContent>
             </Tabs>
           </CardContent>
