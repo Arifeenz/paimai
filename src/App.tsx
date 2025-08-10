@@ -13,6 +13,7 @@ import Plan from "./pages/Plan";
 import AdminDashboard from "./pages/AdminDashboard";
 import Category from "./pages/Category";
 import ActivityDetail from "./pages/ActivityDetail";
+import TripDetail from "./pages/TripDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/category/:category" element={<Category />} />
             <Route path="/activity/:id" element={<ActivityDetail />} />
+            <Route path="/trip/:id" element={<TripDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
