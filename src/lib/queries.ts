@@ -106,6 +106,22 @@ export const getPlaces = async (destinationId?: string) => {
   return data;
 };
 
+// Restaurants
+export const getRestaurants = async (destinationId?: string) => {
+  let query = (supabase as any)
+    .from('restaurants')
+    .select('*')
+    .order('rating', { ascending: false });
+  
+  if (destinationId) {
+    query = query.eq('destination_id', destinationId);
+  }
+  
+  const { data, error } = await query;
+  if (error) throw error;
+  return data;
+};
+
 // Search across all content
 export const searchContent = async (query: string) => {
   const searchTerm = `%${query}%`;

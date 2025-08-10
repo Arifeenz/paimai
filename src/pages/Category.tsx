@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getActivitiesByCategory, getDestinations, getHotels, getPlaces } from '@/lib/queries';
+import { getActivitiesByCategory, getDestinations, getHotels, getPlaces, getRestaurants } from '@/lib/queries';
 import { ArrowLeft, Star, MapPin, Clock, DollarSign } from 'lucide-react';
 
 const Category = () => {
@@ -31,9 +31,8 @@ const Category = () => {
             data = places.filter((place: any) => place.category === 'attraction');
             break;
           case 'food':
-            // Get places that are restaurants
-            const foodPlaces = await getPlaces();
-            data = foodPlaces.filter((place: any) => place.category === 'restaurant');
+            // Get restaurants
+            data = await getRestaurants();
             break;
           case 'cultural':
             // Get cultural activities and places
@@ -208,11 +207,11 @@ const Category = () => {
                     )}
                     
                     {/* Price */}
-                    {(item.price || item.price_per_night) && (
+                    {(item.price || item.price_per_night || item.price_range) && (
                       <div className="flex items-center gap-2 text-sm font-semibold text-primary">
                         <DollarSign className="w-3 h-3" />
                         <span>
-                          ${item.price || item.price_per_night}
+                          {item.price_range || `$${item.price || item.price_per_night}`}
                           {item.price_per_night ? '/night' : ''}
                         </span>
                       </div>
