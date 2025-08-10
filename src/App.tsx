@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { ItineraryProvider } from "@/contexts/ItineraryContext";
 import VoiceAssistant from "@/components/chat/VoiceAssistant";
 import { Navbar } from "@/components/layout/Navbar";
 import Index from "./pages/Index";
@@ -18,7 +19,8 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <TooltipProvider>
+      <ItineraryProvider>
+        <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -35,6 +37,7 @@ const App = () => (
           <VoiceAssistant />
         </BrowserRouter>
       </TooltipProvider>
+      </ItineraryProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

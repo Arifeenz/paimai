@@ -8,10 +8,12 @@ import { Label } from '@/components/ui/label';
 import { Calendar, Clock, MapPin, Plus, Save, ArrowLeft } from 'lucide-react';
 import { createItinerary, getUserItineraries } from '@/lib/queries';
 import { toast } from '@/hooks/use-toast';
+import { useItinerary } from '@/contexts/ItineraryContext';
 
 const Plan = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { getItemsByDay, removeItemFromItinerary } = useItinerary();
   const [itineraryName, setItineraryName] = useState('My Trip');
   const [days, setDays] = useState([
     { id: 1, items: [] }
@@ -129,7 +131,7 @@ const Plan = () => {
                       </Button>
                     </div>
                     
-                    {day.items.length === 0 ? (
+                    {getItemsByDay(day.id).length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground">
                         <MapPin className="w-8 h-8 mx-auto mb-2 opacity-50" />
                         <p>No activities planned for this day</p>
@@ -137,14 +139,33 @@ const Plan = () => {
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        {day.items.map((item: any, index: number) => (
-                          <div key={index} className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
+                        {getItemsByDay(day.id).map((item: any) => (
+                          <div key={item.id} className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
                             <Clock className="w-4 h-4 text-muted-foreground" />
                             <div className="flex-1">
                               <h4 className="font-medium">{item.name}</h4>
                               <p className="text-sm text-muted-foreground">{item.description}</p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                                  {item.type}
+                                </span>
+                                {item.data.price && (
+                                  <span className="text-xs text-muted-foreground">
+                                    ${item.data.price}
+                                  </span>
+                                )}
+                                {item.data.price_range && (
+                                  <span className="text-xs text-muted-foreground">
+                                    {item.data.price_range}
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                            <Button variant="ghost" size="sm">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => removeItemFromItinerary(item.id)}
+                            >
                               Remove
                             </Button>
                           </div>

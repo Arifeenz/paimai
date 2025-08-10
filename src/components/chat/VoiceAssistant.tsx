@@ -8,6 +8,7 @@ import { MessageCircle, Mic, MicOff, Send, X, Plus } from 'lucide-react';
 import { searchContent } from '@/lib/queries';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import { useItinerary } from '@/contexts/ItineraryContext';
 
 interface Message {
   id: string;
@@ -22,6 +23,7 @@ interface SearchResults {
   activities: any[];
   hotels: any[];
   places: any[];
+  restaurants: any[];
 }
 
 const VoiceAssistant = () => {
@@ -32,6 +34,7 @@ const VoiceAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
   const navigate = useNavigate();
+  const { addItemToItinerary } = useItinerary();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -109,7 +112,7 @@ const VoiceAssistant = () => {
     try {
       const results = await searchContent(query);
       const totalResults = results.destinations.length + results.activities.length + 
-                          results.hotels.length + results.places.length;
+                          results.hotels.length + results.places.length + results.restaurants.length;
 
       let assistantContent = '';
       if (totalResults > 0) {
@@ -147,14 +150,13 @@ const VoiceAssistant = () => {
   };
 
   const addToItinerary = (item: any, type: string) => {
-    // This would typically save to a draft itinerary or navigate to plan page
+    // Add to itinerary context
+    addItemToItinerary(item, type, 1);
+    
     toast({
       title: "Added to itinerary",
       description: `${item.name} has been added to your trip plan.`
     });
-    
-    // For now, navigate to plan page
-    navigate('/plan');
   };
 
   const renderResultCard = (item: any, type: string) => (
@@ -239,6 +241,7 @@ const VoiceAssistant = () => {
                   {message.results.activities.map(item => renderResultCard(item, 'activity'))}
                   {message.results.hotels.map(item => renderResultCard(item, 'hotel'))}
                   {message.results.places.map(item => renderResultCard(item, 'place'))}
+                  {message.results.restaurants.map(item => renderResultCard(item, 'restaurant'))}
                 </div>
               )}
             </div>

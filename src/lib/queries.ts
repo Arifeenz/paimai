@@ -126,7 +126,7 @@ export const getRestaurants = async (destinationId?: string) => {
 export const searchContent = async (query: string) => {
   const searchTerm = `%${query}%`;
   
-  const [destinations, activities, hotels, places] = await Promise.all([
+  const [destinations, activities, hotels, places, restaurants] = await Promise.all([
     supabase
       .from('destinations')
       .select('*')
@@ -155,6 +155,11 @@ export const searchContent = async (query: string) => {
         destinations (name, country)
       `)
       .or(`name.ilike.${searchTerm},description.ilike.${searchTerm}`)
+      .limit(5),
+    (supabase as any)
+      .from('restaurants')
+      .select('*')
+      .or(`name.ilike.${searchTerm},description.ilike.${searchTerm}`)
       .limit(5)
   ]);
 
@@ -162,7 +167,8 @@ export const searchContent = async (query: string) => {
     destinations: destinations.data || [],
     activities: activities.data || [],
     hotels: hotels.data || [],
-    places: places.data || []
+    places: places.data || [],
+    restaurants: restaurants.data || []
   };
 };
 
