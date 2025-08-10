@@ -6,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { getFeaturedDestinations, getActivitiesByCategory } from '@/lib/queries';
-import { MapPin, Plane, Search, Star, Users, Camera, Utensils, Mountain } from 'lucide-react';
+import { MapPin, Plane, Search, Star, Users, Camera, Utensils, Mountain, Grid3X3 } from 'lucide-react';
 import { DestinationPopup } from '@/components/DestinationPopup';
 import { ActivityPopup } from '@/components/ActivityPopup';
+import VideoSlide from '@/components/VideoSlide';
 
 const Index = () => {
   const { user } = useAuth();
@@ -59,6 +60,38 @@ const Index = () => {
     setSelectedActivity(activity);
     setShowActivityPopup(true);
   };
+
+  
+  // Sample video data (ในความเป็นจริงอาจจะดึงมาจาก API หรือ database)
+  const sampleVideos = [
+    {
+      id: '1',
+      url: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      title: 'Amazing Sunset at Phi Phi Island',
+      description: 'Experience the breathtaking sunset views at one of Thailand\'s most beautiful islands',
+      thumbnail: 'https://picsum.photos/400/600?random=1',
+      likes: 1205,
+      duration: '0:15'
+    },
+    {
+      id: '2', 
+      url: 'https://www.w3schools.com/html/movie.mp4',
+      title: 'Street Food Adventure in Bangkok',
+      description: 'Discover the amazing flavors of authentic Thai street food',
+      thumbnail: 'https://picsum.photos/400/600?random=2',
+      likes: 892,
+      duration: '0:22'
+    },
+    {
+      id: '3',
+      url: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      title: 'Temple Hopping in Chiang Mai',
+      description: 'Explore the ancient temples and rich culture of Northern Thailand',
+      thumbnail: 'https://picsum.photos/400/600?random=3',
+      likes: 1456,
+      duration: '0:18'
+    }
+  ];
 
   const categories = [
     { icon: Mountain, name: 'Adventure', color: 'bg-accent' },
@@ -115,8 +148,38 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Category Shortcuts */}
+      {/* Category Icon */}
+      <section className="py-8 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20"
+              onClick={() => {
+                const categorySection = document.getElementById('categories-grid');
+                categorySection?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              <Grid3X3 className="w-4 h-4 mr-2" />
+              Categories
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Video Slide Section */}
       <section className="py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">Travel Stories</h2>
+          <div className="flex justify-center">
+            <VideoSlide videos={sampleVideos} />
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Grid (Hidden by default, shown when icon clicked) */}
+      <section id="categories-grid" className="py-16 px-4 bg-muted/30">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">What are you looking for?</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
