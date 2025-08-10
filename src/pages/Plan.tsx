@@ -54,13 +54,22 @@ const Plan = () => {
     setLoading(true);
     try {
       // Convert currentItinerary items to database format
-      const itineraryItems = currentItinerary.map((item, index) => ({
-        item_id: item.data.id,
-        item_type: item.type,
-        day_number: item.dayNumber,
-        order_index: index,
-        notes: ''
-      }));
+      const itineraryItems = currentItinerary.map((item, index) => {
+        // Map plural types to singular for database constraint
+        let itemType = item.type;
+        if (itemType === 'activities') itemType = 'activity';
+        if (itemType === 'hotels') itemType = 'hotel';
+        if (itemType === 'places') itemType = 'place';
+        if (itemType === 'restaurants') itemType = 'restaurant';
+        
+        return {
+          item_id: item.data.id,
+          item_type: itemType,
+          day_number: item.dayNumber,
+          order_index: index,
+          notes: ''
+        };
+      });
 
       const newItinerary = await createItineraryWithItems({
         name: itineraryName,
