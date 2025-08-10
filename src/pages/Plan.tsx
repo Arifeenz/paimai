@@ -6,14 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Calendar, Clock, MapPin, Plus, Save, ArrowLeft, Search, Hotel } from 'lucide-react';
-import { createItinerary, getUserItineraries } from '@/lib/queries';
+import { createItineraryWithItems, getUserItineraries } from '@/lib/queries';
 import { toast } from '@/hooks/use-toast';
 import { useItinerary } from '@/contexts/ItineraryContext';
 
 const Plan = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { getItemsByDay, removeItemFromItinerary } = useItinerary();
+  const { currentItinerary, getItemsByDay, removeItemFromItinerary } = useItinerary();
   const [itineraryName, setItineraryName] = useState('My Trip');
   const [days, setDays] = useState([
     { id: 1, items: [] }
@@ -53,11 +53,20 @@ const Plan = () => {
 
     setLoading(true);
     try {
-      const newItinerary = await createItinerary({
+      // Convert currentItinerary items to database format
+      const itineraryItems = currentItinerary.map((item, index) => ({
+        item_id: item.data.id,
+        item_type: item.type,
+        day_number: item.dayNumber,
+        order_index: index,
+        notes: ''
+      }));
+
+      const newItinerary = await createItineraryWithItems({
         name: itineraryName,
         style: 'mixed',
-        user_id: user.id  // เพิ่ม user_id เพื่อให้ผ่าน RLS policy
-      });
+        user_id: user.id
+      }, itineraryItems);
 
       toast({
         title: "Itinerary saved!",

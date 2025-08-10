@@ -258,6 +258,61 @@ export const deleteItinerary = async (id: string) => {
   if (error) throw error;
 };
 
+// Add items to itinerary
+export const addItemsToItinerary = async (
+  itineraryId: string, 
+  items: Array<{
+    item_id: string;
+    item_type: string;
+    day_number: number;
+    order_index?: number;
+    notes?: string;
+  }>
+) => {
+  const itemsToInsert = items.map(item => ({
+    ...item,
+    itinerary_id: itineraryId,
+  }));
+
+  const { data, error } = await supabase
+    .from('itinerary_items')
+    .insert(itemsToInsert)
+    .select();
+  
+  if (error) throw error;
+  return data;
+};
+
+// Create itinerary with items
+export const createItineraryWithItems = async (
+  itinerary: {
+    name: string;
+    destination_id?: string;
+    start_date?: string;
+    end_date?: string;
+    budget?: number;
+    style?: string;
+    user_id: string;
+  },
+  items: Array<{
+    item_id: string;
+    item_type: string;
+    day_number: number;
+    order_index?: number;
+    notes?: string;
+  }>
+) => {
+  // Create itinerary first
+  const newItinerary = await createItinerary(itinerary);
+  
+  // Add items if any
+  if (items.length > 0) {
+    await addItemsToItinerary(newItinerary.id, items);
+  }
+  
+  return newItinerary;
+};
+
 // Get user's reviews
 export const getUserReviews = async () => {
   const { data, error } = await supabase
