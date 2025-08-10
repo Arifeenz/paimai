@@ -315,6 +315,59 @@ export type Database = {
         }
         Relationships: []
       }
+      restaurants: {
+        Row: {
+          address: string | null
+          category: string | null
+          created_at: string | null
+          description: string | null
+          destination_id: string | null
+          id: string
+          image_url: string | null
+          name: string
+          opening_hours: string | null
+          price_range: string | null
+          rating: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          destination_id?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          opening_hours?: string | null
+          price_range?: string | null
+          rating?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          destination_id?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          opening_hours?: string | null
+          price_range?: string | null
+          rating?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "restaurants_destination_id_fkey"
+            columns: ["destination_id"]
+            isOneToOne: false
+            referencedRelation: "destinations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string | null
