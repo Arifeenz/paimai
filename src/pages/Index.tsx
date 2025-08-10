@@ -136,7 +136,7 @@ const Index = () => {
       
 
       {/* Categories Grid */}
-      <section id="categories-grid" className="py-16 px-4 bg-muted/30">
+      <section id="categories-grid" className="px-4 bg-muted/30 py-[30px]">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">What are you looking for?</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -156,7 +156,7 @@ const Index = () => {
       </section>
 
       {/* Video Slide Section */}
-      <section className="py-16 px-4">
+      <section className="px-4 py-[30px]">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Travel Stories</h2>
           <div className="flex justify-center">
@@ -166,7 +166,7 @@ const Index = () => {
       </section>
 
       {/* Featured Destinations */}
-      <section className="py-16 px-4 bg-muted/30">
+      <section className="px-4 bg-muted/30 py-[30px]">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Top Destinations</h2>
           {loading ? <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -193,7 +193,7 @@ const Index = () => {
       </section>
 
       {/* Popular Activities */}
-      <section className="py-16 px-4">
+      <section className="px-4 py-[30px]">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Recommended Adventures</h2>
           {loading ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
