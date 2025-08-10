@@ -125,9 +125,7 @@ const Index = () => {
           </form>
           
           {!user && <div className="mt-8">
-              <Button onClick={() => navigate('/auth')} variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                Sign in to save trips
-              </Button>
+              
             </div>}
         </div>
       </section>
