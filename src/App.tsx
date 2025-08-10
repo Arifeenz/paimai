@@ -15,6 +15,8 @@ import Category from "./pages/Category";
 import ActivityDetail from "./pages/ActivityDetail";
 import DestinationDetail from "./pages/DestinationDetail";
 import TripDetail from "./pages/TripDetail";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +39,8 @@ const App = () => (
             <Route path="/activity/:id" element={<ActivityDetail />} />
             <Route path="/destination/:id" element={<DestinationDetail />} />
             <Route path="/trip/:id" element={<TripDetail />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
