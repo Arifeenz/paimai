@@ -157,6 +157,11 @@ const VoiceAssistant = () => {
       title: "Added to itinerary",
       description: `${item.name} has been added to your trip plan.`
     });
+    
+    // Navigate to plan page so user can see the item was added
+    setTimeout(() => {
+      navigate('/plan');
+    }, 1000);
   };
 
   const renderResultCard = (item: any, type: string) => (

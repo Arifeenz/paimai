@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calendar, Clock, MapPin, Plus, Save, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, MapPin, Plus, Save, ArrowLeft, Search, Hotel } from 'lucide-react';
 import { createItinerary, getUserItineraries } from '@/lib/queries';
 import { toast } from '@/hooks/use-toast';
 import { useItinerary } from '@/contexts/ItineraryContext';
@@ -76,6 +76,22 @@ const Plan = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFindActivities = () => {
+    navigate('/category/adventure');
+  };
+
+  const handleFindFood = () => {
+    navigate('/category/food');
+  };
+
+  const handleFindHotels = () => {
+    // Could navigate to a hotels category or open a search dialog
+    toast({
+      title: "Hotel search",
+      description: "Use the AI assistant to find hotels for your trip!"
+    });
   };
 
   if (!user) {
@@ -191,17 +207,29 @@ const Plan = () => {
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
-                  <MapPin className="w-4 h-4 mr-2" />
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={handleFindActivities}
+                >
+                  <Search className="w-4 h-4 mr-2" />
                   Find Activities
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Set Dates
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={handleFindFood}
+                >
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Find Restaurants
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Hotel
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={handleFindHotels}
+                >
+                  <Hotel className="w-4 h-4 mr-2" />
+                  Find Hotels
                 </Button>
               </CardContent>
             </Card>
