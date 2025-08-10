@@ -15,6 +15,7 @@ import Category from "./pages/Category";
 import ActivityDetail from "./pages/ActivityDetail";
 import DestinationDetail from "./pages/DestinationDetail";
 import TripDetail from "./pages/TripDetail";
+import MyTrips from "./pages/MyTrips";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/activity/:id" element={<ActivityDetail />} />
             <Route path="/destination/:id" element={<DestinationDetail />} />
             <Route path="/trip/:id" element={<TripDetail />} />
+            <Route path="/my-trips" element={<MyTrips />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

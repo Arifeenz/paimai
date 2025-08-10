@@ -254,8 +254,29 @@ export const deleteItinerary = async (id: string) => {
     .from('itineraries')
     .delete()
     .eq('id', id);
-
+  
   if (error) throw error;
+};
+
+// Get user's reviews
+export const getUserReviews = async () => {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select(`
+      *,
+      profiles (full_name)
+    `)
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  return data;
+};
+
+// Get user's recent activity (last viewed items)
+export const getUserRecentActivity = async () => {
+  // This would typically come from a user_activity table if we had one
+  // For now, we'll return user's reviews as recent activity
+  return getUserReviews();
 };
 
 // Admin CRUD functions for managing travel content
