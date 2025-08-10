@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { getFeaturedDestinations, getActivitiesByCategory } from '@/lib/queries';
 import { MapPin, Plane, Search, Star, Users, Camera, Utensils, Mountain } from 'lucide-react';
+import { DestinationPopup } from '@/components/DestinationPopup';
+import { ActivityPopup } from '@/components/ActivityPopup';
 
 const Index = () => {
   const { user } = useAuth();
@@ -15,6 +17,10 @@ const Index = () => {
   const [featuredDestinations, setFeaturedDestinations] = useState([]);
   const [popularActivities, setPopularActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDestination, setSelectedDestination] = useState(null);
+  const [selectedActivity, setSelectedActivity] = useState(null);
+  const [showDestinationPopup, setShowDestinationPopup] = useState(false);
+  const [showActivityPopup, setShowActivityPopup] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -40,6 +46,18 @@ const Index = () => {
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
+  };
+
+  const handleDestinationClick = (destination: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedDestination(destination);
+    setShowDestinationPopup(true);
+  };
+
+  const handleActivityClick = (activity: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedActivity(activity);
+    setShowActivityPopup(true);
   };
 
   const categories = [
@@ -145,7 +163,7 @@ const Index = () => {
                 <Card 
                   key={destination.id} 
                   className="cursor-pointer hover:scale-105 transition-transform travel-card"
-                  onClick={() => navigate(`/destination/${destination.id}`)}
+                  onClick={(e) => handleDestinationClick(destination, e)}
                 >
                   <div className="h-48 bg-gradient-to-br from-primary to-secondary rounded-t-xl flex items-center justify-center">
                     {destination.image_url ? (
@@ -193,7 +211,7 @@ const Index = () => {
                 <Card 
                   key={activity.id} 
                   className="cursor-pointer hover:scale-105 transition-transform travel-card"
-                  onClick={() => navigate(`/activity/${activity.id}`)}
+                  onClick={(e) => handleActivityClick(activity, e)}
                 >
                   <div className="h-40 bg-gradient-to-br from-secondary to-accent rounded-t-xl flex items-center justify-center">
                     {activity.image_url ? (
@@ -237,6 +255,19 @@ const Index = () => {
           )}
         </div>
       </section>
+
+      {/* Popups */}
+      <DestinationPopup
+        destination={selectedDestination}
+        open={showDestinationPopup}
+        onOpenChange={setShowDestinationPopup}
+      />
+      
+      <ActivityPopup
+        activity={selectedActivity}
+        open={showActivityPopup}
+        onOpenChange={setShowActivityPopup}
+      />
     </div>
   );
 };
