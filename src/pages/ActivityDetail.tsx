@@ -57,7 +57,7 @@ const ActivityDetail = () => {
         .from('reviews')
         .select(`
           *,
-          profiles!reviews_user_id_fkey (full_name)
+          profiles (full_name)
         `)
         .eq('item_id', reviewId)
         .eq('item_type', 'activity')
