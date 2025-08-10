@@ -65,8 +65,9 @@ const VideoSlide = ({ videos }: VideoSlideProps) => {
   const currentVideo = videos[currentIndex];
 
   return (
-    <div className="relative w-full max-w-md mx-auto">
-      <Card className="relative overflow-hidden bg-black rounded-2xl aspect-[9/16] max-h-[600px]">
+    <div className="flex justify-center items-center min-h-screen py-8">
+      <div className="relative w-full max-w-md">
+        <Card className="relative overflow-hidden bg-black rounded-2xl aspect-[9/16] max-h-[600px]">
         {/* Video Container */}
         <div 
           ref={containerRef}
@@ -209,6 +210,7 @@ const VideoSlide = ({ videos }: VideoSlideProps) => {
           </span>
         </div>
       </Card>
+      </div>
     </div>
   );
 };
