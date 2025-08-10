@@ -32,7 +32,7 @@ export const DestinationPopup = ({ destination, open, onOpenChange }: Destinatio
         .from('reviews')
         .select(`
           *,
-          profiles:user_id (full_name)
+          profiles (full_name)
         `)
         .eq('item_id', destination.id)
         .eq('item_type', 'destination')

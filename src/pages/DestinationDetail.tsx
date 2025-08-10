@@ -43,7 +43,7 @@ const DestinationDetail = () => {
               .from('reviews')
               .select(`
                 *,
-                profiles!reviews_user_id_fkey (full_name)
+                profiles (full_name)
               `)
               .eq('item_id', id)
               .eq('item_type', 'destination')
@@ -72,7 +72,7 @@ const DestinationDetail = () => {
         .from('reviews')
         .select(`
           *,
-          profiles!reviews_user_id_fkey (full_name)
+          profiles (full_name)
         `)
         .eq('item_id', id)
         .eq('item_type', 'destination')
