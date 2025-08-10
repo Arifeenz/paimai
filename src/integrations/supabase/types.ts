@@ -230,6 +230,34 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_itinerary_items_activities"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "activities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_itinerary_items_hotels"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_itinerary_items_places"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "places"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_itinerary_items_restaurants"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "itinerary_items_itinerary_id_fkey"
             columns: ["itinerary_id"]
             isOneToOne: false
