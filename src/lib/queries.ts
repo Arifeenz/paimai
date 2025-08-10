@@ -393,12 +393,17 @@ export const createItineraryWithItems = async (
 
 // Get user's reviews
 export const getUserReviews = async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) throw new Error('User not authenticated');
+  
   const { data, error } = await supabase
     .from('reviews')
     .select(`
       *,
       profiles (full_name)
     `)
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false });
   
   if (error) throw error;
