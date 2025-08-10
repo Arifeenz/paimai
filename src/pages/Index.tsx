@@ -168,17 +168,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Video Slide Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Travel Stories</h2>
-          <div className="flex justify-center">
-            <VideoSlide videos={sampleVideos} />
-          </div>
-        </div>
-      </section>
-
-      {/* Categories Grid (Hidden by default, shown when icon clicked) */}
+      {/* Categories Grid */}
       <section id="categories-grid" className="py-16 px-4 bg-muted/30">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">What are you looking for?</h2>
@@ -192,14 +182,24 @@ const Index = () => {
                   onClick={() => navigate(`/category/${category.name.toLowerCase()}`)}
                 >
                   <CardContent className="p-6 text-center">
-                    <div className={`w-16 h-16 ${category.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
-                      <Icon className="w-8 h-8 text-white" />
+                    <div className={`w-12 h-12 ${category.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                      <Icon className="w-6 h-6 text-white" />
                     </div>
                     <h3 className="font-semibold text-lg">{category.name}</h3>
                   </CardContent>
                 </Card>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Video Slide Section */}
+      <section className="py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">Travel Stories</h2>
+          <div className="flex justify-center">
+            <VideoSlide videos={sampleVideos} />
           </div>
         </div>
       </section>
