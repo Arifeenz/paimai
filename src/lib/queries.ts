@@ -258,7 +258,7 @@ export const deleteItinerary = async (id: string) => {
   if (error) throw error;
 };
 
-// Admin CRUD functions
+// Admin CRUD functions for managing travel content
 export const createItem = async (table: string, data: any) => {
   const { data: result, error } = await supabase
     .from(table as any)
