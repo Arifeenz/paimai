@@ -199,23 +199,101 @@ export const getUserItineraries = async () => {
 };
 
 export const getItinerary = async (id: string) => {
+  console.log('Fetching itinerary:', id);
+  
   const { data, error } = await supabase
     .from('itineraries')
     .select(`
       *,
-      destinations (name, country),
-      itinerary_items (
-        *,
-        activities (*),
-        hotels (*),
-        places (*)
-      )
+      destinations (name, country)
     `)
     .eq('id', id)
     .maybeSingle();
   
-  if (error) throw error;
-  return data;
+  if (error) {
+    console.error('Error fetching itinerary:', error);
+    throw error;
+  }
+
+  if (!data) {
+    console.log('No itinerary found');
+    return null;
+  }
+
+  console.log('Itinerary found:', data);
+
+  // Fetch itinerary items separately
+  const { data: items, error: itemsError } = await supabase
+    .from('itinerary_items')
+    .select('*')
+    .eq('itinerary_id', id);
+
+  if (itemsError) {
+    console.error('Error fetching itinerary items:', itemsError);
+    throw itemsError;
+  }
+
+  console.log('Itinerary items found:', items);
+
+  // For each item, fetch the actual data based on item_type
+  const itemsWithData = await Promise.all(
+    (items || []).map(async (item) => {
+      let itemData = null;
+      
+      try {
+        switch (item.item_type) {
+          case 'activities':
+            const { data: activity } = await supabase
+              .from('activities')
+              .select('*')
+              .eq('id', item.item_id)
+              .maybeSingle();
+            itemData = { activities: activity };
+            break;
+          case 'hotels':
+            const { data: hotel } = await supabase
+              .from('hotels')
+              .select('*')
+              .eq('id', item.item_id)
+              .maybeSingle();
+            itemData = { hotels: hotel };
+            break;
+          case 'places':
+            const { data: place } = await supabase
+              .from('places')
+              .select('*')
+              .eq('id', item.item_id)
+              .maybeSingle();
+            itemData = { places: place };
+            break;
+          case 'restaurants':
+            const { data: restaurant } = await supabase
+              .from('restaurants')
+              .select('*')
+              .eq('id', item.item_id)
+              .maybeSingle();
+            itemData = { restaurants: restaurant };
+            break;
+          default:
+            console.warn('Unknown item type:', item.item_type);
+        }
+      } catch (err) {
+        console.error(`Error fetching ${item.item_type} data:`, err);
+      }
+
+      return {
+        ...item,
+        ...itemData
+      };
+    })
+  );
+
+  console.log('Items with data:', itemsWithData);
+
+  return {
+    ...data,
+    itinerary_items: itemsWithData
+  };
 };
 
 export const createItinerary = async (itinerary: {

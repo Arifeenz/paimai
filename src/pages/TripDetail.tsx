@@ -179,7 +179,7 @@ const TripDetail = () => {
                       
                       <div className="space-y-3">
                         {groupedByDay[day].map((item: any) => {
-                          const itemData = item.activities || item.hotels || item.places || {};
+                          const itemData = item.activities || item.hotels || item.places || item.restaurants || {};
                           return (
                             <div key={item.id} className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
                               <Clock className="w-4 h-4 text-muted-foreground" />
