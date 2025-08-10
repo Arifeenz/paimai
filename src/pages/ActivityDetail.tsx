@@ -6,11 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Star, MapPin, Clock, DollarSign, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { ReviewSection } from '@/components/ReviewSection';
 
 const ActivityDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [activity, setActivity] = useState<any>(null);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,6 +35,9 @@ const ActivityDetail = () => {
 
         if (error) throw error;
         setActivity(data);
+        
+        // Load reviews for this activity
+        await loadReviews(id);
       } catch (error) {
         console.error('Error loading activity:', error);
       } finally {
@@ -42,6 +47,27 @@ const ActivityDetail = () => {
 
     loadActivity();
   }, [id]);
+
+  const loadReviews = async (activityId?: string) => {
+    const reviewId = activityId || id;
+    if (!reviewId) return;
+    
+    try {
+      const { data } = await supabase
+        .from('reviews')
+        .select(`
+          *,
+          profiles!reviews_user_id_fkey (full_name)
+        `)
+        .eq('item_id', reviewId)
+        .eq('item_type', 'activity')
+        .order('created_at', { ascending: false });
+      
+      setReviews(data || []);
+    } catch (error) {
+      console.error('Error loading reviews:', error);
+    }
+  };
 
   if (loading) {
     return (
@@ -125,6 +151,23 @@ const ActivityDetail = () => {
                 <p className="text-muted-foreground leading-relaxed">
                   {activity.description || 'No description available.'}
                 </p>
+              </CardContent>
+            </Card>
+
+            {/* Reviews */}
+            <Card className="travel-card">
+              <CardHeader>
+                <CardTitle>Reviews & Experiences</CardTitle>
+                <CardDescription>What people say about this activity</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ReviewSection
+                  itemId={activity.id}
+                  itemType="activity"
+                  reviews={reviews}
+                  onReviewAdded={() => loadReviews()}
+                  loading={false}
+                />
               </CardContent>
             </Card>
           </div>

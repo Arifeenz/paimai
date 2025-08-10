@@ -32,7 +32,7 @@ export const ActivityPopup = ({ activity, open, onOpenChange }: ActivityPopupPro
         .from('reviews')
         .select(`
           *,
-          profiles:user_id (full_name)
+          profiles!reviews_user_id_fkey (full_name)
         `)
         .eq('item_id', activity.id)
         .eq('item_type', 'activity')
