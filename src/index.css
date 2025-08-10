@@ -87,7 +87,12 @@
 
 @layer components {
   .travel-card {
-    @apply bg-card border border-border rounded-xl shadow-soft hover:shadow-medium transition-all duration-300;
+    @apply bg-card border border-border rounded-xl hover:shadow-lg transition-all duration-300;
+    box-shadow: 0 2px 8px -2px hsl(203 89% 53% / 0.1);
+  }
+  
+  .travel-card:hover {
+    box-shadow: 0 4px 16px -4px hsl(203 89% 53% / 0.15);
   }
   
   .travel-gradient {
@@ -107,12 +112,25 @@
   }
   
   .floating-action {
-    @apply fixed bottom-6 right-6 z-50 rounded-full shadow-strong hover:shadow-xl transition-all duration-300;
+    @apply fixed bottom-6 right-6 z-50 rounded-full hover:shadow-xl transition-all duration-300;
+    box-shadow: 0 8px 32px -8px hsl(203 89% 53% / 0.2);
   }
 }
 
 @layer utilities {
   .text-gradient {
     @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+  }
+  
+  .shadow-soft {
+    box-shadow: 0 2px 8px -2px hsl(203 89% 53% / 0.1);
+  }
+  
+  .shadow-medium {
+    box-shadow: 0 4px 16px -4px hsl(203 89% 53% / 0.15);
+  }
+  
+  .shadow-strong {
+    box-shadow: 0 8px 32px -8px hsl(203 89% 53% / 0.2);
   }
 }
