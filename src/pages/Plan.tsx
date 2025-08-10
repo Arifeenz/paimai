@@ -22,12 +22,14 @@ const Plan = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    loadUserItineraries();
+  }, []);
+
+  useEffect(() => {
     if (!user) {
       navigate('/auth');
       return;
     }
-
-    loadUserItineraries();
   }, [user, navigate]);
 
   const loadUserItineraries = async () => {
@@ -45,11 +47,7 @@ const Plan = () => {
 
   const saveItinerary = async () => {
     if (!user) {
-      toast({
-        title: "Please sign in",
-        description: "You need to be signed in to save itineraries.",
-        variant: "destructive"
-      });
+      navigate('/auth');
       return;
     }
 
