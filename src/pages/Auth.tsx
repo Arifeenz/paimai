@@ -20,32 +20,53 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      const redirectUrl = `${window.location.origin}/`;
-      
-      const { error } = await supabase.auth.signUp({
+      if (password.length < 6) {
+        toast({
+          title: "Password too short",
+          description: "Password must be at least 6 characters",
+          variant: "destructive"
+        });
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: redirectUrl
+          emailRedirectTo: `${window.location.origin}/`
         }
       });
 
       if (error) {
+        console.error('Signup error:', error);
         toast({
           title: "Sign up failed",
           description: error.message,
           variant: "destructive"
         });
       } else {
-        toast({
-          title: "Check your email",
-          description: "We've sent you a confirmation link!"
-        });
+        console.log('Signup successful:', data);
+        if (data.user && !data.user.email_confirmed_at) {
+          toast({
+            title: "Check your email",
+            description: "We've sent you a confirmation link to complete your registration!"
+          });
+        } else {
+          toast({
+            title: "Account created successfully!",
+            description: "You can now sign in with your credentials."
+          });
+          // Switch to sign in tab
+          const signInTab = document.querySelector('[value="signin"]') as HTMLElement;
+          signInTab?.click();
+        }
       }
     } catch (error: any) {
+      console.error('Signup catch error:', error);
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || "An unexpected error occurred",
         variant: "destructive"
       });
     } finally {
