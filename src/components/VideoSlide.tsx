@@ -55,7 +55,7 @@ const VideoSlide = ({
   }, [currentIndex]);
   if (!videos.length) return null;
   const currentVideo = videos[currentIndex];
-  return <div className="flex justify-center items-center min-h-screen py-[10px]">
+  return <div className="flex justify-center items-center py-6">
       <div className="relative w-full max-w-md">
         <Card className="relative overflow-hidden bg-black rounded-2xl aspect-[9/16] max-h-[600px]">
         {/* Video Container */}
