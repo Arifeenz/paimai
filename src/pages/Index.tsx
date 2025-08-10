@@ -154,7 +154,7 @@ const Index = () => {
       </section>
 
       {/* Video Slide Section */}
-      <section className="px-4 py-[30px]">
+      <section className="px-4 py-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Travel Stories</h2>
           <div className="flex justify-center">
