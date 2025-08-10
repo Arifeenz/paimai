@@ -22,6 +22,8 @@ import {
 import { getUserProfile } from '@/lib/queries';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import AdminForm from '@/components/admin/AdminForm';
+import { createItem, updateItem, deleteItem } from '@/lib/queries';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -37,6 +39,9 @@ const AdminDashboard = () => {
     restaurants: []
   });
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editItem, setEditItem] = useState<any>(null);
+  const [currentType, setCurrentType] = useState('');
 
   useEffect(() => {
     if (!user) {
@@ -99,25 +104,57 @@ const AdminDashboard = () => {
     }
   };
 
-  const deleteItem = async (table: string, id: string) => {
+  const handleDelete = async (table: string, id: string) => {
     try {
-      const { error } = await supabase
-        .from(table as any)
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
+      await deleteItem(table, id);
       toast({
         title: "Item deleted",
         description: "The item has been successfully deleted."
       });
-
       await loadData();
     } catch (error) {
       console.error('Error deleting item:', error);
       toast({
         title: "Error deleting item",
+        description: "Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleAdd = (type: string) => {
+    setCurrentType(type);
+    setEditItem(null);
+    setShowForm(true);
+  };
+
+  const handleEdit = (type: string, item: any) => {
+    setCurrentType(type);
+    setEditItem(item);
+    setShowForm(true);
+  };
+
+  const handleSave = async (data: any) => {
+    try {
+      if (editItem) {
+        await updateItem(currentType, editItem.id, data);
+        toast({
+          title: "Item updated",
+          description: "The item has been successfully updated."
+        });
+      } else {
+        await createItem(currentType, data);
+        toast({
+          title: "Item created",
+          description: "The item has been successfully created."
+        });
+      }
+      await loadData();
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error saving item:', error);
+      toast({
+        title: "Error saving item",
         description: "Please try again.",
         variant: "destructive"
       });
@@ -144,7 +181,7 @@ const AdminDashboard = () => {
               />
             </div>
           </div>
-          <Button>
+          <Button onClick={() => handleAdd(type)}>
             <Plus className="w-4 h-4 mr-2" />
             Add {type.slice(0, -1)}
           </Button>
@@ -203,13 +240,17 @@ const AdminDashboard = () => {
                   </div>
                   
                   <div className="flex items-center space-x-2 ml-4">
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleEdit(type, item)}
+                    >
                       <Edit className="w-4 h-4" />
                     </Button>
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => deleteItem(type, item.id)}
+                      onClick={() => handleDelete(type, item.id)}
                     >
                       <Trash className="w-4 h-4" />
                     </Button>
@@ -355,6 +396,17 @@ const AdminDashboard = () => {
             </Tabs>
           </CardContent>
         </Card>
+
+        {/* Admin Form Modal */}
+        {showForm && (
+          <AdminForm
+            type={currentType}
+            item={editItem}
+            destinations={data.destinations}
+            onSave={handleSave}
+            onClose={() => setShowForm(false)}
+          />
+        )}
       </div>
     </div>
   );

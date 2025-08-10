@@ -254,6 +254,39 @@ export const deleteItinerary = async (id: string) => {
     .from('itineraries')
     .delete()
     .eq('id', id);
-  
+
+  if (error) throw error;
+};
+
+// Admin CRUD functions
+export const createItem = async (table: string, data: any) => {
+  const { data: result, error } = await supabase
+    .from(table as any)
+    .insert(data)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return result;
+};
+
+export const updateItem = async (table: string, id: string, data: any) => {
+  const { data: result, error } = await supabase
+    .from(table as any)
+    .update(data)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return result;
+};
+
+export const deleteItem = async (table: string, id: string) => {
+  const { error } = await supabase
+    .from(table as any)
+    .delete()
+    .eq('id', id);
+
   if (error) throw error;
 };
