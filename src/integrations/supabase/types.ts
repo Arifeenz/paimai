@@ -339,6 +339,7 @@ export type Database = {
           description: string | null
           destination_id: string | null
           google_maps_url: string | null
+          halal: boolean | null
           id: string
           image_url: string | null
           name: string
@@ -354,6 +355,7 @@ export type Database = {
           description?: string | null
           destination_id?: string | null
           google_maps_url?: string | null
+          halal?: boolean | null
           id?: string
           image_url?: string | null
           name: string
@@ -369,6 +371,7 @@ export type Database = {
           description?: string | null
           destination_id?: string | null
           google_maps_url?: string | null
+          halal?: boolean | null
           id?: string
           image_url?: string | null
           name?: string
