@@ -25,14 +25,18 @@ const Category = () => {
           case 'adventure':
             data = await getActivitiesByCategory('adventure');
             break;
-          case 'attractions':
+          case 'sightseeing':
             // Get places that are attractions
             const places = await getPlaces();
             data = places.filter((place: any) => place.category === 'attraction');
             break;
           case 'food':
-            // Get restaurants
-            data = await getRestaurants();
+            // Get restaurants and food activities
+            const [restaurants, foodActivities] = await Promise.all([
+              getRestaurants(),
+              getActivitiesByCategory('food')
+            ]);
+            data = [...restaurants, ...foodActivities];
             break;
           case 'hotels':
             // Get hotels
@@ -52,6 +56,10 @@ const Category = () => {
             );
             data = [...culturalActivities, ...culturalPlaces];
             break;
+          case 'nature':
+            // Get nature activities
+            data = await getActivitiesByCategory('nature');
+            break;
           default:
             data = [];
         }
@@ -69,23 +77,25 @@ const Category = () => {
 
   const getCategoryTitle = () => {
     switch (category?.toLowerCase()) {
-      case 'adventure': return 'Adventure Activities';
-      case 'attractions': return 'Top Attractions';
-      case 'food': return 'Food & Dining';
-      case 'cultural': return 'Cultural Experiences';
-      case 'hotels': return 'Hotels & Accommodation';
-      default: return 'Category';
+      case 'adventure': return 'กิจกรรมผจญภัย';
+      case 'sightseeing': return 'สถานที่ท่องเที่ยว';
+      case 'food': return 'อาหารและร้านอาหาร';
+      case 'cultural': return 'ประสบการณ์วัฒนธรรม';
+      case 'hotels': return 'โรงแรมและที่พัก';
+      case 'nature': return 'ธรรมชาติ';
+      default: return 'หมวดหมู่';
     }
   };
 
   const getCategoryDescription = () => {
     switch (category?.toLowerCase()) {
-      case 'adventure': return 'Thrilling activities and outdoor adventures';
-      case 'attractions': return 'Must-see places and tourist attractions';
-      case 'food': return 'Local cuisine and dining experiences';
-      case 'cultural': return 'Cultural sites and traditional experiences';
-      case 'hotels': return 'Comfortable stays and accommodations';
-      default: return 'Explore this category';
+      case 'adventure': return 'กิจกรรมที่ท้าทายและการผจญภัยกลางแจ้ง';
+      case 'sightseeing': return 'สถานที่ต้องชมและสถานที่ท่องเที่ยว';
+      case 'food': return 'อาหารท้องถิ่นและประสบการณ์การรับประทานอาหาร';
+      case 'cultural': return 'สถานที่ทางวัฒนธรรมและประสบการณ์ดั้งเดิม';
+      case 'hotels': return 'ที่พักสบายและที่พักแรม';
+      case 'nature': return 'ธรรมชาติและสถานที่ผ่อนคลาย';
+      default: return 'สำรวจหมวดหมู่นี้';
     }
   };
 
@@ -140,12 +150,12 @@ const Category = () => {
         {/* Items Grid */}
         {items.length === 0 ? (
           <div className="text-center py-16">
-            <h3 className="text-xl font-semibold mb-2">No items found</h3>
+            <h3 className="text-xl font-semibold mb-2">ไม่พบรายการ</h3>
             <p className="text-muted-foreground mb-6">
-              We couldn't find any {category} items at the moment.
+              เราไม่พบรายการ {getCategoryTitle()} ในขณะนี้
             </p>
             <Button onClick={() => navigate('/')}>
-              Back to Home
+              กลับหน้าแรก
             </Button>
           </div>
         ) : (
@@ -206,24 +216,24 @@ const Category = () => {
                       </div>
                     )}
                     
-                    {/* Duration for activities */}
-                    {item.duration_hours && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="w-3 h-3" />
-                        <span>{item.duration_hours} hours</span>
-                      </div>
-                    )}
-                    
-                    {/* Price */}
-                    {(item.price || item.price_per_night || item.price_range) && (
-                      <div className="flex items-center gap-2 text-sm font-semibold text-primary">
-                        <DollarSign className="w-3 h-3" />
-                        <span>
-                          {item.price_range || `$${item.price || item.price_per_night}`}
-                          {item.price_per_night ? '/night' : ''}
-                        </span>
-                      </div>
-                    )}
+                     {/* Duration for activities */}
+                     {item.duration_hours && (
+                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                         <Clock className="w-3 h-3" />
+                         <span>{item.duration_hours} ชั่วโมง</span>
+                       </div>
+                     )}
+                     
+                     {/* Price */}
+                     {(item.price || item.price_per_night || item.price_range) && (
+                       <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+                         <DollarSign className="w-3 h-3" />
+                         <span>
+                           {item.price_range || `฿${item.price || item.price_per_night}`}
+                           {item.price_per_night ? '/คืน' : ''}
+                         </span>
+                       </div>
+                     )}
                   </div>
                 </CardContent>
               </Card>

@@ -83,18 +83,22 @@ const Index = () => {
   const categories = [{
     icon: Mountain,
     name: 'ผจญภัย',
+    slug: 'adventure',
     color: 'bg-accent'
   }, {
     icon: Camera,
     name: 'สถานที่ท่องเที่ยว',
+    slug: 'sightseeing',
     color: 'bg-primary'
   }, {
     icon: Utensils,
     name: 'อาหาร',
+    slug: 'food',
     color: 'bg-secondary'
   }, {
     icon: Users,
     name: 'วัฒนธรรม',
+    slug: 'cultural',
     color: 'bg-muted'
   }];
   return <div className="min-h-screen bg-background">
@@ -140,7 +144,7 @@ const Index = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {categories.map(category => {
             const Icon = category.icon;
-            return <Card key={category.name} className="cursor-pointer hover:scale-105 transition-transform travel-card" onClick={() => navigate(`/category/${category.name.toLowerCase()}`)}>
+            return <Card key={category.name} className="cursor-pointer hover:scale-105 transition-transform travel-card" onClick={() => navigate(`/category/${category.slug}`)}>
                   <CardContent className="p-6 text-center">
                     <div className={`w-12 h-12 ${category.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
                       <Icon className="w-6 h-6 text-white" />
