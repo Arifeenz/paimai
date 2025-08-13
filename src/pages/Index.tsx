@@ -82,14 +82,9 @@ const Index = () => {
   }];
   const categories = [{
     icon: Camera,
-    name: 'สถานที่ท่องเที่ยว',
-    slug: 'places',
+    name: 'ที่เที่ยวและกิจกรรม',
+    slug: 'places-activities',
     color: 'bg-primary'
-  }, {
-    icon: Mountain,
-    name: 'กิจกรรมและประสบการณ์',
-    slug: 'activities',
-    color: 'bg-accent'
   }, {
     icon: Utensils,
     name: 'อาหารและเครื่องดื่ม',
@@ -99,6 +94,11 @@ const Index = () => {
     icon: Users,
     name: 'ที่พัก',
     slug: 'hotels',
+    color: 'bg-accent'
+  }, {
+    icon: Plane,
+    name: 'การเดินทาง',
+    slug: 'transportation',
     color: 'bg-muted'
   }];
   return <div className="min-h-screen bg-background">

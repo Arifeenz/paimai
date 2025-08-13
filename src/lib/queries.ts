@@ -525,3 +525,42 @@ export const deleteItem = async (table: string, id: string) => {
 
   if (error) throw error;
 };
+
+// Transportation queries
+export const getTransportation = async (destinationId?: string) => {
+  try {
+    let query = supabase
+      .from('transportation')
+      .select('*')
+      .order('rating', { ascending: false })
+      .order('created_at', { ascending: false });
+
+    if (destinationId) {
+      query = query.eq('destination_id', destinationId);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching transportation:', error);
+    return [];
+  }
+};
+
+export const getTransportationByCategory = async (category: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('transportation')
+      .select('*')
+      .eq('category', category)
+      .order('rating', { ascending: false })
+      .limit(10);
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching transportation by category:', error);
+    return [];
+  }
+};

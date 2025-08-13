@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getActivitiesByCategory, getDestinations, getHotels, getPlaces, getRestaurants } from '@/lib/queries';
+import { getActivitiesByCategory, getDestinations, getHotels, getPlaces, getRestaurants, getTransportation, getActivities } from '@/lib/queries';
 import { ArrowLeft, Star, MapPin, Clock, DollarSign } from 'lucide-react';
 
 const Category = () => {
@@ -22,14 +22,13 @@ const Category = () => {
         let data = [];
         
         switch (category.toLowerCase()) {
-          case 'places':
-            // Get all places and destinations
-            data = await getPlaces();
-            break;
-          case 'activities':
-            // Get all activities
-            const activities = await getActivitiesByCategory('');
-            data = activities;
+          case 'places-activities':
+            // Combine places and activities data
+            const [places, activities] = await Promise.all([
+              getPlaces(),
+              getActivities()
+            ]);
+            data = [...(places || []), ...(activities || [])];
             break;
           case 'restaurants':
             // Get all restaurants
@@ -39,13 +38,24 @@ const Category = () => {
             // Get all hotels
             data = await getHotels();
             break;
+          case 'transportation':
+            // Get all transportation
+            data = await getTransportation();
+            break;
           // Keep old category support for backwards compatibility
+          case 'places':
+            data = await getPlaces();
+            break;
+          case 'activities':
+            const allActivities = await getActivitiesByCategory('');
+            data = allActivities;
+            break;
           case 'adventure':
             data = await getActivitiesByCategory('adventure');
             break;
           case 'sightseeing':
-            const places = await getPlaces();
-            data = places.filter((place: any) => place.category === 'attraction');
+            const sightseeingPlaces = await getPlaces();
+            data = sightseeingPlaces.filter((place: any) => place.category === 'attraction');
             break;
           case 'food':
             const [restaurants, foodActivities] = await Promise.all([
@@ -87,11 +97,13 @@ const Category = () => {
 
   const getCategoryTitle = () => {
     switch (category?.toLowerCase()) {
-      case 'places': return 'สถานที่ท่องเที่ยว';
-      case 'activities': return 'กิจกรรมและประสบการณ์';
+      case 'places-activities': return 'ที่เที่ยวและกิจกรรม';
       case 'restaurants': return 'อาหารและเครื่องดื่ม';
       case 'hotels': return 'ที่พัก';
+      case 'transportation': return 'การเดินทาง';
       // Keep old category support
+      case 'places': return 'สถานที่ท่องเที่ยว';
+      case 'activities': return 'กิจกรรมและประสบการณ์';
       case 'adventure': return 'กิจกรรมผจญภัย';
       case 'sightseeing': return 'สถานที่ท่องเที่ยว';
       case 'food': return 'อาหารและร้านอาหาร';
@@ -103,11 +115,13 @@ const Category = () => {
 
   const getCategoryDescription = () => {
     switch (category?.toLowerCase()) {
-      case 'places': return 'สถานที่ต้องชมและสถานที่ท่องเที่ยวที่น่าสนใจ';
-      case 'activities': return 'กิจกรรมและประสบการณ์ที่น่าตื่นเต้น';
+      case 'places-activities': return 'สถานที่ต้องชมและกิจกรรมที่น่าสนใจทั้งหมด';
       case 'restaurants': return 'ร้านอาหารและประสบการณ์การรับประทานอาหาร';
       case 'hotels': return 'ที่พักสบายและโรงแรมคุณภาพ';
+      case 'transportation': return 'บริการการเดินทาง เช่ารถ และขนส่ง';
       // Keep old category support
+      case 'places': return 'สถานที่ต้องชมและสถานที่ท่องเที่ยวที่น่าสนใจ';
+      case 'activities': return 'กิจกรรมและประสบการณ์ที่น่าตื่นเต้น';
       case 'adventure': return 'กิจกรรมที่ท้าทายและการผจญภัยกลางแจ้ง';
       case 'sightseeing': return 'สถานที่ต้องชมและสถานที่ท่องเที่ยว';
       case 'food': return 'อาหารท้องถิ่นและประสบการณ์การรับประทานอาหาร';
@@ -188,7 +202,9 @@ const Category = () => {
                     navigate(`/hotel/${item.id}`);
                   } else if (category === 'restaurants' || item.price_range || item.opening_hours) {
                     navigate(`/restaurant/${item.id}`);
-                  } else if (category === 'activities' || item.duration_hours || item.price) {
+                  } else if (category === 'transportation' || item.capacity || item.features) {
+                    navigate(`/transportation/${item.id}`);
+                  } else if (category === 'activities' || category === 'places-activities' || item.duration_hours || item.price) {
                     navigate(`/activity/${item.id}`);
                   } else {
                     navigate(`/place/${item.id}`);

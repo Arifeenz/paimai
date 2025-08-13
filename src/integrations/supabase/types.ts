@@ -428,6 +428,57 @@ export type Database = {
           },
         ]
       }
+      transportation: {
+        Row: {
+          availability_hours: string | null
+          capacity: number | null
+          category: string
+          contact_info: string | null
+          created_at: string
+          description: string | null
+          destination_id: string | null
+          features: string[] | null
+          id: string
+          image_url: string | null
+          name: string
+          price: number | null
+          rating: number | null
+          updated_at: string
+        }
+        Insert: {
+          availability_hours?: string | null
+          capacity?: number | null
+          category: string
+          contact_info?: string | null
+          created_at?: string
+          description?: string | null
+          destination_id?: string | null
+          features?: string[] | null
+          id?: string
+          image_url?: string | null
+          name: string
+          price?: number | null
+          rating?: number | null
+          updated_at?: string
+        }
+        Update: {
+          availability_hours?: string | null
+          capacity?: number | null
+          category?: string
+          contact_info?: string | null
+          created_at?: string
+          description?: string | null
+          destination_id?: string | null
+          features?: string[] | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number | null
+          rating?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
