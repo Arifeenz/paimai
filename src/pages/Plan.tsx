@@ -18,7 +18,7 @@ import { useItinerary } from '@/contexts/ItineraryContext';
 const Plan = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { currentItinerary, getItemsByDay, removeItemFromItinerary, moveItemToDay } = useItinerary();
+  const { currentItinerary, getItemsByDay, removeItemFromItinerary, moveItemToDay, reorderItems } = useItinerary();
   const [itineraryName, setItineraryName] = useState('My Trip');
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
@@ -120,18 +120,22 @@ const Plan = () => {
     const sourceDay = parseInt(result.source.droppableId);
     const destinationDay = parseInt(result.destination.droppableId);
     const itemId = result.draggableId;
+    const newIndex = result.destination.index;
 
     // Find the item in the itinerary context
     const item = currentItinerary.find(item => item.id === itemId);
     if (!item) return;
 
-    // If moving to a different day, update the day number in context
+    // If moving to a different day or reordering within the same day
     if (sourceDay !== destinationDay) {
       moveItemToDay(itemId, destinationDay);
       toast({
-        title: "Item moved",
-        description: `Successfully moved item to Day ${destinationDay}`,
+        title: "เลื่อนรายการสำเร็จ",
+        description: `เลื่อนรายการไปยังวันที่ ${destinationDay} เรียบร้อยแล้ว`,
       });
+    } else {
+      // Reorder within the same day
+      reorderItems(itemId, destinationDay, newIndex);
     }
   };
 
