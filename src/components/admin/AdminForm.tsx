@@ -428,8 +428,9 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                     <SelectItem value="thai">อาหารไทย</SelectItem>
                     <SelectItem value="international">อาหารนานาชาติ</SelectItem>
                     <SelectItem value="seafood">อาหารทะเล</SelectItem>
-                    <SelectItem value="street-food">อาหารข้างทาง</SelectItem>
+                    <SelectItem value="street-food">อาหารริมทาง</SelectItem>
                     <SelectItem value="fine-dining">ร้านอาหารหรู</SelectItem>
+                    <SelectItem value="cafe">คาเฟ่</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
