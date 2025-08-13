@@ -14,6 +14,10 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Category from "./pages/Category";
 import ActivityDetail from "./pages/ActivityDetail";
 import DestinationDetail from "./pages/DestinationDetail";
+import RestaurantDetail from "./pages/RestaurantDetail";
+import HotelDetail from "./pages/HotelDetail";
+import PlaceDetail from "./pages/PlaceDetail";
+import TransportationDetail from "./pages/TransportationDetail";
 import TripDetail from "./pages/TripDetail";
 import MyTrips from "./pages/MyTrips";
 import Profile from "./pages/Profile";
@@ -39,6 +43,10 @@ const App = () => (
             <Route path="/category/:category" element={<Category />} />
             <Route path="/activity/:id" element={<ActivityDetail />} />
             <Route path="/destination/:id" element={<DestinationDetail />} />
+            <Route path="/restaurant/:id" element={<RestaurantDetail />} />
+            <Route path="/hotel/:id" element={<HotelDetail />} />
+            <Route path="/place/:id" element={<PlaceDetail />} />
+            <Route path="/transportation/:id" element={<TransportationDetail />} />
             <Route path="/trip/:id" element={<TripDetail />} />
             <Route path="/my-trips" element={<MyTrips />} />
             <Route path="/profile" element={<Profile />} />
