@@ -66,7 +66,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
           <>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">ชื่อ</Label>
                 <Input
                   id="name"
                   value={formData.name || ''}
@@ -75,7 +75,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
               <div>
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="country">ประเทศ</Label>
                 <Input
                   id="country"
                   value={formData.country || ''}
@@ -85,7 +85,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
               </div>
             </div>
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">คำอธิบาย</Label>
               <Textarea
                 id="description"
                 value={formData.description || ''}
@@ -94,7 +94,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
               />
             </div>
             <div>
-              <Label htmlFor="image_url">Image URL</Label>
+              <Label htmlFor="image_url">URL รูปภาพ</Label>
               <Input
                 id="image_url"
                 value={formData.image_url || ''}
@@ -107,7 +107,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 checked={formData.featured || false}
                 onCheckedChange={(checked) => handleChange('featured', checked)}
               />
-              <Label htmlFor="featured">Featured</Label>
+              <Label htmlFor="featured">แนะนำ</Label>
             </div>
           </>
         );
@@ -117,7 +117,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
           <>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">ชื่อ</Label>
                 <Input
                   id="name"
                   value={formData.name || ''}
@@ -126,23 +126,23 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
               <div>
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="category">หมวดหมู่</Label>
                 <Select value={formData.category || ''} onValueChange={(value) => handleChange('category', value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder="เลือกหมวดหมู่" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="adventure">Adventure</SelectItem>
-                    <SelectItem value="cultural">Cultural</SelectItem>
-                    <SelectItem value="nature">Nature</SelectItem>
-                    <SelectItem value="relaxation">Relaxation</SelectItem>
-                    <SelectItem value="food">Food</SelectItem>
+                    <SelectItem value="adventure">ผจญภัย</SelectItem>
+                    <SelectItem value="cultural">วัฒนธรรม</SelectItem>
+                    <SelectItem value="nature">ธรรมชาติ</SelectItem>
+                    <SelectItem value="relaxation">พักผ่อน</SelectItem>
+                    <SelectItem value="food">อาหาร</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">คำอธิบาย</Label>
               <Textarea
                 id="description"
                 value={formData.description || ''}
@@ -152,10 +152,10 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="destination_id">Destination</Label>
+                <Label htmlFor="destination_id">จุดหมายปลายทาง</Label>
                 <Select value={formData.destination_id || ''} onValueChange={(value) => handleChange('destination_id', value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select destination" />
+                    <SelectValue placeholder="เลือกจุดหมาย" />
                   </SelectTrigger>
                   <SelectContent>
                     {destinations.map((dest) => (
@@ -165,7 +165,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 </Select>
               </div>
               <div>
-                <Label htmlFor="price">Price ($)</Label>
+                <Label htmlFor="price">ราคา (฿)</Label>
                 <Input
                   id="price"
                   type="number"
@@ -174,7 +174,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
               <div>
-                <Label htmlFor="duration_hours">Duration (hours)</Label>
+                <Label htmlFor="duration_hours">ระยะเวลา (ชั่วโมง)</Label>
                 <Input
                   id="duration_hours"
                   type="number"
@@ -185,7 +185,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="image_url">Image URL</Label>
+                <Label htmlFor="image_url">URL รูปภาพ</Label>
                 <Input
                   id="image_url"
                   value={formData.image_url || ''}
@@ -206,7 +206,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
               </div>
             </div>
             <div>
-              <Label htmlFor="google_maps_url">Google Maps URL</Label>
+              <Label htmlFor="google_maps_url">ลิงค์ Google Maps</Label>
               <Input
                 id="google_maps_url"
                 type="url"
@@ -223,7 +223,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
           <>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">ชื่อ</Label>
                 <Input
                   id="name"
                   value={formData.name || ''}
@@ -232,10 +232,10 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
               <div>
-                <Label htmlFor="destination_id">Destination</Label>
+                <Label htmlFor="destination_id">จุดหมายปลายทาง</Label>
                 <Select value={formData.destination_id || ''} onValueChange={(value) => handleChange('destination_id', value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select destination" />
+                    <SelectValue placeholder="เลือกจุดหมาย" />
                   </SelectTrigger>
                   <SelectContent>
                     {destinations.map((dest) => (
@@ -246,7 +246,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
               </div>
             </div>
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">คำอธิบาย</Label>
               <Textarea
                 id="description"
                 value={formData.description || ''}
@@ -256,7 +256,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">ที่อยู่</Label>
                 <Input
                   id="address"
                   value={formData.address || ''}
@@ -264,7 +264,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
               <div>
-                <Label htmlFor="price_per_night">Price per night ($)</Label>
+                <Label htmlFor="price_per_night">ราคาต่อคืน (฿)</Label>
                 <Input
                   id="price_per_night"
                   type="number"
@@ -275,7 +275,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="image_url">Image URL</Label>
+                <Label htmlFor="image_url">URL รูปภาพ</Label>
                 <Input
                   id="image_url"
                   value={formData.image_url || ''}
@@ -296,7 +296,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
               </div>
             </div>
             <div>
-              <Label htmlFor="google_maps_url">Google Maps URL</Label>
+              <Label htmlFor="google_maps_url">ลิงค์ Google Maps</Label>
               <Input
                 id="google_maps_url"
                 type="url"
@@ -313,7 +313,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
           <>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">ชื่อ</Label>
                 <Input
                   id="name"
                   value={formData.name || ''}
@@ -322,23 +322,23 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
               <div>
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="category">หมวดหมู่</Label>
                 <Select value={formData.category || ''} onValueChange={(value) => handleChange('category', value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder="เลือกหมวดหมู่" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="landmark">Landmark</SelectItem>
-                    <SelectItem value="museum">Museum</SelectItem>
-                    <SelectItem value="park">Park</SelectItem>
-                    <SelectItem value="beach">Beach</SelectItem>
-                    <SelectItem value="temple">Temple</SelectItem>
+                    <SelectItem value="landmark">สถานที่สำคัญ</SelectItem>
+                    <SelectItem value="museum">พิพิธภัณฑ์</SelectItem>
+                    <SelectItem value="park">สวนสาธารณะ</SelectItem>
+                    <SelectItem value="beach">ชายหาด</SelectItem>
+                    <SelectItem value="temple">วัด</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">คำอธิบาย</Label>
               <Textarea
                 id="description"
                 value={formData.description || ''}
@@ -348,10 +348,10 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="destination_id">Destination</Label>
+                <Label htmlFor="destination_id">จุดหมายปลายทาง</Label>
                 <Select value={formData.destination_id || ''} onValueChange={(value) => handleChange('destination_id', value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select destination" />
+                    <SelectValue placeholder="เลือกจุดหมาย" />
                   </SelectTrigger>
                   <SelectContent>
                     {destinations.map((dest) => (
@@ -361,7 +361,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 </Select>
               </div>
               <div>
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">ที่อยู่</Label>
                 <Input
                   id="address"
                   value={formData.address || ''}
@@ -371,7 +371,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="image_url">Image URL</Label>
+                <Label htmlFor="image_url">URL รูปภาพ</Label>
                 <Input
                   id="image_url"
                   value={formData.image_url || ''}
@@ -392,7 +392,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
               </div>
             </div>
             <div>
-              <Label htmlFor="google_maps_url">Google Maps URL</Label>
+              <Label htmlFor="google_maps_url">ลิงค์ Google Maps</Label>
               <Input
                 id="google_maps_url"
                 type="url"
@@ -409,7 +409,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
           <>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">ชื่อ</Label>
                 <Input
                   id="name"
                   value={formData.name || ''}
@@ -418,23 +418,23 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
               <div>
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="category">หมวดหมู่</Label>
                 <Select value={formData.category || ''} onValueChange={(value) => handleChange('category', value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder="เลือกหมวดหมู่" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="thai">Thai</SelectItem>
-                    <SelectItem value="international">International</SelectItem>
-                    <SelectItem value="seafood">Seafood</SelectItem>
-                    <SelectItem value="street-food">Street Food</SelectItem>
-                    <SelectItem value="fine-dining">Fine Dining</SelectItem>
+                    <SelectItem value="thai">อาหารไทย</SelectItem>
+                    <SelectItem value="international">อาหารนานาชาติ</SelectItem>
+                    <SelectItem value="seafood">อาหารทะเล</SelectItem>
+                    <SelectItem value="street-food">อาหารข้างทาง</SelectItem>
+                    <SelectItem value="fine-dining">ร้านอาหารหรู</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">คำอธิบาย</Label>
               <Textarea
                 id="description"
                 value={formData.description || ''}
@@ -444,10 +444,10 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="destination_id">Destination</Label>
+                <Label htmlFor="destination_id">จุดหมายปลายทาง</Label>
                 <Select value={formData.destination_id || ''} onValueChange={(value) => handleChange('destination_id', value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select destination" />
+                    <SelectValue placeholder="เลือกจุดหมาย" />
                   </SelectTrigger>
                   <SelectContent>
                     {destinations.map((dest) => (
@@ -457,23 +457,23 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 </Select>
               </div>
               <div>
-                <Label htmlFor="price_range">Price Range</Label>
+                <Label htmlFor="price_range">ช่วงราคา</Label>
                 <Select value={formData.price_range || ''} onValueChange={(value) => handleChange('price_range', value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select price range" />
+                    <SelectValue placeholder="เลือกช่วงราคา" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="$">$ (Budget)</SelectItem>
-                    <SelectItem value="$$">$$ (Mid-range)</SelectItem>
-                    <SelectItem value="$$$">$$$ (Expensive)</SelectItem>
-                    <SelectItem value="$$$$">$$$$ (Very Expensive)</SelectItem>
+                    <SelectItem value="฿">฿ (ประหยัด)</SelectItem>
+                    <SelectItem value="฿฿">฿฿ (ปานกลาง)</SelectItem>
+                    <SelectItem value="฿฿฿">฿฿฿ (แพง)</SelectItem>
+                    <SelectItem value="฿฿฿฿">฿฿฿฿ (แพงมาก)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">ที่อยู่</Label>
                 <Input
                   id="address"
                   value={formData.address || ''}
@@ -481,18 +481,18 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
               <div>
-                <Label htmlFor="opening_hours">Opening Hours</Label>
+                <Label htmlFor="opening_hours">เวลาเปิด-ปิด</Label>
                 <Input
                   id="opening_hours"
                   value={formData.opening_hours || ''}
                   onChange={(e) => handleChange('opening_hours', e.target.value)}
-                  placeholder="e.g., 9:00 AM - 10:00 PM"
+                  placeholder="เช่น 9:00 - 22:00"
                 />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="image_url">Image URL</Label>
+                <Label htmlFor="image_url">URL รูปภาพ</Label>
                 <Input
                   id="image_url"
                   value={formData.image_url || ''}
@@ -521,7 +521,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
               <Label htmlFor="halal">อาหารฮาลาล (Halal Food)</Label>
             </div>
             <div>
-              <Label htmlFor="google_maps_url">Google Maps URL</Label>
+              <Label htmlFor="google_maps_url">ลิงค์ Google Maps</Label>
               <Input
                 id="google_maps_url"
                 type="url"
@@ -543,7 +543,10 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
       <div className="bg-background rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold">
-            {item ? 'Edit' : 'Add'} {type.slice(0, -1)}
+            {item ? 'แก้ไข' : 'เพิ่ม'} {type === 'destinations' ? 'จุดหมายปลายทาง' : 
+             type === 'activities' ? 'กิจกรรม' : 
+             type === 'hotels' ? 'โรงแรม' : 
+             type === 'places' ? 'สถานที่' : 'ร้านอาหาร'}
           </h2>
           <Button variant="outline" size="sm" onClick={onClose}>
             <X className="w-4 h-4" />
@@ -555,10 +558,10 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
           
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              ยกเลิก
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? 'Saving...' : 'Save'}
+              {loading ? 'กำลังบันทึก...' : 'บันทึก'}
             </Button>
           </div>
         </form>

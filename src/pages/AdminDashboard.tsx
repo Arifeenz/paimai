@@ -226,12 +226,12 @@ const AdminDashboard = () => {
                       )}
                       {item.price && (
                         <span className="font-semibold text-primary">
-                          ${item.price}
+                          ฿{item.price}
                         </span>
                       )}
                       {item.price_per_night && (
                         <span className="font-semibold text-primary">
-                          ${item.price_per_night}/night
+                          ฿{item.price_per_night}/คืน
                         </span>
                       )}
                       {item.price_range && (
@@ -293,7 +293,7 @@ const AdminDashboard = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">Content Management</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">จัดการเนื้อหา</h1>
             <p className="text-muted-foreground text-sm">จัดการข้อมูลระบบ</p>
           </div>
           <Button variant="outline" onClick={() => navigate('/')} className="self-end sm:self-auto">
@@ -307,7 +307,7 @@ const AdminDashboard = () => {
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Destinations</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">จุดหมายปลายทาง</p>
                   <p className="text-lg sm:text-2xl font-bold">{data.destinations.length}</p>
                 </div>
                 <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
@@ -319,7 +319,7 @@ const AdminDashboard = () => {
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Activities</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">กิจกรรม</p>
                   <p className="text-lg sm:text-2xl font-bold">{data.activities.length}</p>
                 </div>
                 <Mountain className="w-6 h-6 sm:w-8 sm:h-8 text-secondary" />
@@ -331,7 +331,7 @@ const AdminDashboard = () => {
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Hotels</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">โรงแรม</p>
                   <p className="text-lg sm:text-2xl font-bold">{data.hotels.length}</p>
                 </div>
                 <Building className="w-6 h-6 sm:w-8 sm:h-8 text-accent" />
@@ -343,7 +343,7 @@ const AdminDashboard = () => {
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Places</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">สถานที่</p>
                   <p className="text-lg sm:text-2xl font-bold">{data.places.length}</p>
                 </div>
                 <Users className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground" />
@@ -355,7 +355,7 @@ const AdminDashboard = () => {
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Restaurants</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">ร้านอาหาร</p>
                   <p className="text-lg sm:text-2xl font-bold">{data.restaurants.length}</p>
                 </div>
                 <Users className="w-6 h-6 sm:w-8 sm:h-8 text-orange-500" />
@@ -367,16 +367,16 @@ const AdminDashboard = () => {
         {/* Content Management */}
         <Card className="travel-card">
           <CardHeader>
-            <CardTitle>Content Management</CardTitle>
+            <CardTitle>จัดการเนื้อหา</CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
-                <TabsTrigger value="destinations" className="text-xs sm:text-sm">Destinations</TabsTrigger>
-                <TabsTrigger value="activities" className="text-xs sm:text-sm">Activities</TabsTrigger>
-                <TabsTrigger value="hotels" className="text-xs sm:text-sm">Hotels</TabsTrigger>
-                <TabsTrigger value="places" className="text-xs sm:text-sm">Places</TabsTrigger>
-                <TabsTrigger value="restaurants" className="text-xs sm:text-sm">Restaurants</TabsTrigger>
+                <TabsTrigger value="destinations" className="text-xs sm:text-sm">จุดหมาย</TabsTrigger>
+                <TabsTrigger value="activities" className="text-xs sm:text-sm">กิจกรรม</TabsTrigger>
+                <TabsTrigger value="hotels" className="text-xs sm:text-sm">โรงแรม</TabsTrigger>
+                <TabsTrigger value="places" className="text-xs sm:text-sm">สถานที่</TabsTrigger>
+                <TabsTrigger value="restaurants" className="text-xs sm:text-sm">ร้านอาหาร</TabsTrigger>
               </TabsList>
               
               <TabsContent value="destinations" className="mt-6">

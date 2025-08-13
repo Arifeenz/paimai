@@ -82,19 +82,19 @@ const Index = () => {
   }];
   const categories = [{
     icon: Mountain,
-    name: 'Adventure',
+    name: 'ผจญภัย',
     color: 'bg-accent'
   }, {
     icon: Camera,
-    name: 'Attractions',
+    name: 'สถานที่ท่องเที่ยว',
     color: 'bg-primary'
   }, {
     icon: Utensils,
-    name: 'Food',
+    name: 'อาหาร',
     color: 'bg-secondary'
   }, {
     icon: Users,
-    name: 'Cultural',
+    name: 'วัฒนธรรม',
     color: 'bg-muted'
   }];
   return <div className="min-h-screen bg-background">
@@ -105,22 +105,22 @@ const Index = () => {
         
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            Discover Your Next
-            <span className="block text-gradient">Adventure</span>
+            ค้นพบการเดินทาง
+            <span className="block text-gradient">ครั้งต่อไป</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 opacity-90">
-            AI-powered travel planning made simple. Find amazing destinations, create perfect itineraries.
+            วางแผนการเดินทางด้วย AI ค้นหาจุดหมายที่น่าตื่นตาและสร้างแผนการเดินทางที่สมบูรณ์แบบ
           </p>
           
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-              <Input type="text" placeholder="Where do you want to go?" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-12 h-14 bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/70" />
+              <Input type="text" placeholder="คุณต้องการไปที่ไหน?" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-12 h-14 bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/70" />
             </div>
             <Button type="submit" size="lg" className="h-14 px-8 bg-white text-primary hover:bg-white/90">
               <Plane className="mr-2 w-5 h-5" />
-              Explore
+              สำรวจ
             </Button>
           </form>
           
@@ -136,7 +136,7 @@ const Index = () => {
       {/* Categories Grid */}
       <section id="categories-grid" className="px-4 bg-muted/30 py-[30px]">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">What are you looking for?</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">คุณกำลังมองหาอะไร?</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {categories.map(category => {
             const Icon = category.icon;
@@ -156,7 +156,7 @@ const Index = () => {
       {/* Video Slide Section */}
       <section className="px-4 py-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Travel Stories</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">เรื่องราวการเดินทาง</h2>
           <div className="flex justify-center">
             <VideoSlide videos={sampleVideos} />
           </div>
@@ -166,7 +166,7 @@ const Index = () => {
       {/* Featured Destinations */}
       <section className="px-4 bg-muted/30 py-[30px]">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Top Destinations</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">จุดหมายยอดนิยม</h2>
           {loading ? <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[1, 2, 3].map(i => <Card key={i} className="travel-card">
                   <div className="h-48 bg-muted animate-pulse rounded-t-xl" />
@@ -193,7 +193,7 @@ const Index = () => {
       {/* Popular Activities */}
       <section className="px-4 py-[30px]">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Recommended Adventures</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">กิจกรรมแนะนำ</h2>
           {loading ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map(i => <Card key={i} className="travel-card">
                   <div className="h-40 bg-muted animate-pulse rounded-t-xl" />
@@ -225,7 +225,7 @@ const Index = () => {
                         {activity.destinations?.name}
                       </span>
                       {activity.price && <span className="font-semibold text-primary">
-                          ${activity.price}
+                          ฿{activity.price}
                         </span>}
                     </div>
                   </CardContent>
