@@ -410,16 +410,25 @@ export const getUserReviews = async () => {
   const { data, error } = await supabase
     .from('reviews')
     .select(`
-      *,
-      profiles (full_name)
+      id,
+      comment,
+      rating,
+      created_at,
+      item_type,
+      item_id,
+      user_id,
+      profiles!inner (full_name)
     `)
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
   
-  console.log('User reviews query result:', { data, error }); // Debug log
+  console.log('User reviews query result:', { data, error, userFilter: user.id }); // Debug log
   
-  if (error) throw error;
-  return data;
+  if (error) {
+    console.error('Error fetching user reviews:', error);
+    throw error;
+  }
+  return data || [];
 };
 
 // Get user's recent activity (last viewed items)

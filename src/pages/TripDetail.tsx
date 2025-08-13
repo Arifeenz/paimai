@@ -53,7 +53,7 @@ const TripDetail = () => {
         title: "Trip deleted",
         description: "Your trip has been deleted successfully."
       });
-      navigate('/plan');
+      navigate('/my-trips');
     } catch (error) {
       console.error('Error deleting itinerary:', error);
       toast({
