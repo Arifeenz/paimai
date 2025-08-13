@@ -22,10 +22,10 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
     
     const defaults: Record<string, any> = {
       destinations: { name: '', description: '', country: '', image_url: '', featured: false },
-      activities: { name: '', description: '', category: '', destination_id: '', price: '', duration_hours: '', image_url: '' },
-      hotels: { name: '', description: '', address: '', destination_id: '', price_per_night: '', amenities: [], image_url: '' },
-      places: { name: '', description: '', category: '', address: '', destination_id: '', image_url: '' },
-      restaurants: { name: '', description: '', category: '', address: '', destination_id: '', price_range: '', opening_hours: '', image_url: '' }
+      activities: { name: '', description: '', category: '', destination_id: '', price: '', duration_hours: '', image_url: '', rating: 0 },
+      hotels: { name: '', description: '', address: '', destination_id: '', price_per_night: '', amenities: [], image_url: '', rating: 0 },
+      places: { name: '', description: '', category: '', address: '', destination_id: '', image_url: '', rating: 0 },
+      restaurants: { name: '', description: '', category: '', address: '', destination_id: '', price_range: '', opening_hours: '', image_url: '', rating: 0 }
     };
     
     return defaults[type] || {};
@@ -183,13 +183,27 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
             </div>
-            <div>
-              <Label htmlFor="image_url">Image URL</Label>
-              <Input
-                id="image_url"
-                value={formData.image_url || ''}
-                onChange={(e) => handleChange('image_url', e.target.value)}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="image_url">Image URL</Label>
+                <Input
+                  id="image_url"
+                  value={formData.image_url || ''}
+                  onChange={(e) => handleChange('image_url', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="rating">Rating (0-5 ดาว)</Label>
+                <Input
+                  id="rating"
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={formData.rating || 0}
+                  onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
+                />
+              </div>
             </div>
           </>
         );
@@ -249,13 +263,27 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
             </div>
-            <div>
-              <Label htmlFor="image_url">Image URL</Label>
-              <Input
-                id="image_url"
-                value={formData.image_url || ''}
-                onChange={(e) => handleChange('image_url', e.target.value)}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="image_url">Image URL</Label>
+                <Input
+                  id="image_url"
+                  value={formData.image_url || ''}
+                  onChange={(e) => handleChange('image_url', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="rating">Rating (0-5 ดาว)</Label>
+                <Input
+                  id="rating"
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={formData.rating || 0}
+                  onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
+                />
+              </div>
             </div>
           </>
         );
@@ -321,13 +349,27 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
             </div>
-            <div>
-              <Label htmlFor="image_url">Image URL</Label>
-              <Input
-                id="image_url"
-                value={formData.image_url || ''}
-                onChange={(e) => handleChange('image_url', e.target.value)}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="image_url">Image URL</Label>
+                <Input
+                  id="image_url"
+                  value={formData.image_url || ''}
+                  onChange={(e) => handleChange('image_url', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="rating">Rating (0-5 ดาว)</Label>
+                <Input
+                  id="rating"
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={formData.rating || 0}
+                  onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
+                />
+              </div>
             </div>
           </>
         );
@@ -418,13 +460,27 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
             </div>
-            <div>
-              <Label htmlFor="image_url">Image URL</Label>
-              <Input
-                id="image_url"
-                value={formData.image_url || ''}
-                onChange={(e) => handleChange('image_url', e.target.value)}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="image_url">Image URL</Label>
+                <Input
+                  id="image_url"
+                  value={formData.image_url || ''}
+                  onChange={(e) => handleChange('image_url', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="rating">Rating (0-5 ดาว)</Label>
+                <Input
+                  id="rating"
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={formData.rating || 0}
+                  onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
+                />
+              </div>
             </div>
           </>
         );
