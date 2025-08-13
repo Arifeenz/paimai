@@ -163,7 +163,7 @@ export const Navbar = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleSignOut} className="flex items-center">
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>ออกจากระบบ</span>
+                  <span>{t('nav.signOut')}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -173,7 +173,7 @@ export const Navbar = () => {
                 <Link to="/auth">{t('nav.auth')}</Link>
               </Button>
               <Button asChild>
-                <Link to="/auth">สมัครสมาชิก</Link>
+                <Link to="/auth">{t('nav.signUp')}</Link>
               </Button>
             </div>
           )}
