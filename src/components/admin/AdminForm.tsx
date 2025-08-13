@@ -25,7 +25,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
       activities: { name: '', description: '', category: '', destination_id: '', price: '', duration_hours: '', image_url: '', rating: 0 },
       hotels: { name: '', description: '', address: '', destination_id: '', price_per_night: '', amenities: [], image_url: '', rating: 0 },
       places: { name: '', description: '', category: '', address: '', destination_id: '', image_url: '', rating: 0 },
-      restaurants: { name: '', description: '', category: '', address: '', destination_id: '', price_range: '', opening_hours: '', image_url: '', rating: 0 }
+      restaurants: { name: '', description: '', category: '', address: '', destination_id: '', price_range: '', opening_hours: '', image_url: '', rating: 0, halal: false }
     };
     
     return defaults[type] || {};
@@ -481,6 +481,14 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                   onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
                 />
               </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="halal"
+                checked={formData.halal || false}
+                onCheckedChange={(checked) => handleChange('halal', checked)}
+              />
+              <Label htmlFor="halal">อาหารฮาลาล (Halal Food)</Label>
             </div>
           </>
         );
