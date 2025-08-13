@@ -246,6 +246,7 @@ export const getItinerary = async (id: string) => {
       
       try {
         switch (item.item_type) {
+          case 'activity':
           case 'activities':
             const { data: activity } = await supabase
               .from('activities')
@@ -254,6 +255,7 @@ export const getItinerary = async (id: string) => {
               .maybeSingle();
             itemData = { activities: activity };
             break;
+          case 'hotel':
           case 'hotels':
             const { data: hotel } = await supabase
               .from('hotels')
@@ -262,6 +264,7 @@ export const getItinerary = async (id: string) => {
               .maybeSingle();
             itemData = { hotels: hotel };
             break;
+          case 'place':
           case 'places':
             const { data: place } = await supabase
               .from('places')
@@ -270,6 +273,7 @@ export const getItinerary = async (id: string) => {
               .maybeSingle();
             itemData = { places: place };
             break;
+          case 'restaurant':
           case 'restaurants':
             const { data: restaurant } = await supabase
               .from('restaurants')
