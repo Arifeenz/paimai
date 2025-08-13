@@ -22,10 +22,10 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
     
     const defaults: Record<string, any> = {
       destinations: { name: '', description: '', country: '', image_url: '', featured: false },
-      activities: { name: '', description: '', category: '', destination_id: '', price: '', duration_hours: '', image_url: '', rating: 0 },
-      hotels: { name: '', description: '', address: '', destination_id: '', price_per_night: '', amenities: [], image_url: '', rating: 0 },
-      places: { name: '', description: '', category: '', address: '', destination_id: '', image_url: '', rating: 0 },
-      restaurants: { name: '', description: '', category: '', address: '', destination_id: '', price_range: '', opening_hours: '', image_url: '', rating: 0, halal: false }
+      activities: { name: '', description: '', category: '', destination_id: '', price: '', duration_hours: '', image_url: '', rating: 0, google_maps_url: '' },
+      hotels: { name: '', description: '', address: '', destination_id: '', price_per_night: '', amenities: [], image_url: '', rating: 0, google_maps_url: '' },
+      places: { name: '', description: '', category: '', address: '', destination_id: '', image_url: '', rating: 0, google_maps_url: '' },
+      restaurants: { name: '', description: '', category: '', address: '', destination_id: '', price_range: '', opening_hours: '', image_url: '', rating: 0, halal: false, google_maps_url: '' }
     };
     
     return defaults[type] || {};
@@ -205,6 +205,16 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 />
               </div>
             </div>
+            <div>
+              <Label htmlFor="google_maps_url">Google Maps URL</Label>
+              <Input
+                id="google_maps_url"
+                type="url"
+                placeholder="https://maps.google.com/..."
+                value={formData.google_maps_url || ''}
+                onChange={(e) => handleChange('google_maps_url', e.target.value)}
+              />
+            </div>
           </>
         );
 
@@ -284,6 +294,16 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                   onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
                 />
               </div>
+            </div>
+            <div>
+              <Label htmlFor="google_maps_url">Google Maps URL</Label>
+              <Input
+                id="google_maps_url"
+                type="url"
+                placeholder="https://maps.google.com/..."
+                value={formData.google_maps_url || ''}
+                onChange={(e) => handleChange('google_maps_url', e.target.value)}
+              />
             </div>
           </>
         );
@@ -370,6 +390,16 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                   onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
                 />
               </div>
+            </div>
+            <div>
+              <Label htmlFor="google_maps_url">Google Maps URL</Label>
+              <Input
+                id="google_maps_url"
+                type="url"
+                placeholder="https://maps.google.com/..."
+                value={formData.google_maps_url || ''}
+                onChange={(e) => handleChange('google_maps_url', e.target.value)}
+              />
             </div>
           </>
         );
@@ -489,6 +519,16 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 onCheckedChange={(checked) => handleChange('halal', checked)}
               />
               <Label htmlFor="halal">อาหารฮาลาล (Halal Food)</Label>
+            </div>
+            <div>
+              <Label htmlFor="google_maps_url">Google Maps URL</Label>
+              <Input
+                id="google_maps_url"
+                type="url"
+                placeholder="https://maps.google.com/..."
+                value={formData.google_maps_url || ''}
+                onChange={(e) => handleChange('google_maps_url', e.target.value)}
+              />
             </div>
           </>
         );
