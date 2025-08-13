@@ -26,7 +26,7 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
       hotels: { name: '', description: '', address: '', destination_id: '', price_per_night: '', amenities: [], image_url: '', rating: 0, google_maps_url: '' },
       places: { name: '', description: '', category: '', address: '', destination_id: '', image_url: '', rating: 0, google_maps_url: '' },
       restaurants: { name: '', description: '', category: '', address: '', destination_id: '', price_range: '', opening_hours: '', image_url: '', rating: 0, halal: false, google_maps_url: '' },
-      transportation: { name: '', description: '', category: '', destination_id: '', price: '', capacity: '', features: [], availability_hours: '', contact_info: '', image_url: '', rating: 0 }
+      transportation: { name: '', description: '', category: '', price: '', capacity: '', features: [], availability_hours: '', contact_info: '', image_url: '', rating: 0 }
     };
     
     return defaults[type] || {};
@@ -554,12 +554,13 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                     <SelectValue placeholder="เลือกหมวดหมู่" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="car-rental">เช่ารถ</SelectItem>
-                    <SelectItem value="private-car">รถส่วนตัว</SelectItem>
-                    <SelectItem value="bus">รถบัส</SelectItem>
-                    <SelectItem value="van">รถตู้</SelectItem>
-                    <SelectItem value="motorbike">รถจักรยานยนต์</SelectItem>
-                    <SelectItem value="tour-bus">รถทัวร์</SelectItem>
+                    <SelectItem value="เช่ารถ">เช่ารถ</SelectItem>
+                    <SelectItem value="รถส่วนตัว">รถส่วนตัว</SelectItem>
+                    <SelectItem value="รถสองแถว">รถสองแถว</SelectItem>
+                    <SelectItem value="รถตุ๊กตุ๊ก">รถตุ๊กตุ๊ก</SelectItem>
+                    <SelectItem value="เหมารถตู้">เหมารถตู้</SelectItem>
+                    <SelectItem value="วินมอไซค์">วินมอไซค์</SelectItem>
+                    <SelectItem value="รถไฟ">รถไฟ</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -573,29 +574,14 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
                 rows={3}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="destination_id">จุดหมายปลายทาง</Label>
-                <Select value={formData.destination_id || ''} onValueChange={(value) => handleChange('destination_id', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="เลือกจุดหมาย" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {destinations.map((dest) => (
-                      <SelectItem key={dest.id} value={dest.id}>{dest.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="capacity">ความจุ (คน)</Label>
-                <Input
-                  id="capacity"
-                  type="number"
-                  value={formData.capacity || ''}
-                  onChange={(e) => handleChange('capacity', parseInt(e.target.value) || 0)}
-                />
-              </div>
+            <div>
+              <Label htmlFor="capacity">ความจุ (คน)</Label>
+              <Input
+                id="capacity"
+                type="number"
+                value={formData.capacity || ''}
+                onChange={(e) => handleChange('capacity', parseInt(e.target.value) || 0)}
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
