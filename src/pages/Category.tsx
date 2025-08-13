@@ -34,6 +34,10 @@ const Category = () => {
             // Get restaurants
             data = await getRestaurants();
             break;
+          case 'hotels':
+            // Get hotels
+            data = await getHotels();
+            break;
           case 'cultural':
             // Get cultural activities and places
             const [culturalActivities, allPlaces] = await Promise.all([
@@ -69,6 +73,7 @@ const Category = () => {
       case 'attractions': return 'Top Attractions';
       case 'food': return 'Food & Dining';
       case 'cultural': return 'Cultural Experiences';
+      case 'hotels': return 'Hotels & Accommodation';
       default: return 'Category';
     }
   };
@@ -79,6 +84,7 @@ const Category = () => {
       case 'attractions': return 'Must-see places and tourist attractions';
       case 'food': return 'Local cuisine and dining experiences';
       case 'cultural': return 'Cultural sites and traditional experiences';
+      case 'hotels': return 'Comfortable stays and accommodations';
       default: return 'Explore this category';
     }
   };
@@ -149,8 +155,10 @@ const Category = () => {
                 key={item.id} 
                 className="cursor-pointer hover:scale-105 transition-transform travel-card"
                 onClick={() => {
-                  // Navigate based on item type
-                  if (item.category && ['adventure', 'cultural', 'sightseeing'].includes(item.category)) {
+                  // Navigate based on item type and category
+                  if (category === 'hotels' || item.price_per_night) {
+                    navigate(`/hotel/${item.id}`);
+                  } else if (item.category && ['adventure', 'cultural', 'sightseeing'].includes(item.category)) {
                     navigate(`/activity/${item.id}`);
                   } else {
                     navigate(`/place/${item.id}`);

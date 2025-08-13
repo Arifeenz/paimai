@@ -5,7 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calendar, Clock, MapPin, Plus, Save, ArrowLeft, Search, Hotel } from 'lucide-react';
+import { Calendar, Clock, MapPin, Plus, Save, ArrowLeft, Search, Hotel, CalendarIcon } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { createItineraryWithItems, getUserItineraries } from '@/lib/queries';
 import { toast } from '@/hooks/use-toast';
 import { useItinerary } from '@/contexts/ItineraryContext';
@@ -13,8 +18,10 @@ import { useItinerary } from '@/contexts/ItineraryContext';
 const Plan = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { currentItinerary, getItemsByDay, removeItemFromItinerary } = useItinerary();
+  const { currentItinerary, getItemsByDay, removeItemFromItinerary, moveItemToDay } = useItinerary();
   const [itineraryName, setItineraryName] = useState('My Trip');
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
   const [days, setDays] = useState([
     { id: 1, items: [] }
   ]);
@@ -65,7 +72,9 @@ const Plan = () => {
       const newItinerary = await createItineraryWithItems({
         name: itineraryName,
         style: 'mixed',
-        user_id: user.id
+        user_id: user.id,
+        start_date: startDate ? format(startDate, 'yyyy-MM-dd') : null,
+        end_date: endDate ? format(endDate, 'yyyy-MM-dd') : null
       }, itineraryItems);
 
       toast({
@@ -95,11 +104,28 @@ const Plan = () => {
   };
 
   const handleFindHotels = () => {
-    // Could navigate to a hotels category or open a search dialog
-    toast({
-      title: "Hotel search",
-      description: "Use the AI assistant to find hotels for your trip!"
-    });
+    navigate('/category/hotels');
+  };
+
+  const onDragEnd = (result: any) => {
+    if (!result.destination) return;
+
+    const sourceDay = parseInt(result.source.droppableId);
+    const destinationDay = parseInt(result.destination.droppableId);
+    const itemId = result.draggableId;
+
+    // Find the item in the itinerary context
+    const item = currentItinerary.find(item => item.id === itemId);
+    if (!item) return;
+
+    // If moving to a different day, update the day number in context
+    if (sourceDay !== destinationDay) {
+      moveItemToDay(itemId, destinationDay);
+      toast({
+        title: "Item moved",
+        description: `Successfully moved item to Day ${destinationDay}`,
+      });
+    }
   };
 
   if (!user) {
@@ -139,65 +165,155 @@ const Plan = () => {
                       placeholder="My Amazing Trip"
                     />
                   </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Start Date</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !startDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <CalendarComponent
+                            mode="single"
+                            selected={startDate}
+                            onSelect={setStartDate}
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label>End Date</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !endDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <CalendarComponent
+                            mode="single"
+                            selected={endDate}
+                            onSelect={setEndDate}
+                            initialFocus
+                            disabled={(date) => startDate ? date < startDate : false}
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
-                {days.map((day) => (
-                  <div key={day.id} className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold flex items-center">
-                        <Calendar className="w-5 h-5 mr-2" />
-                        Day {day.id}
-                      </h3>
-                      <Button variant="outline" size="sm">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Item
-                      </Button>
-                    </div>
-                    
-                    {getItemsByDay(day.id).length === 0 ? (
-                      <div className="text-center py-8 text-muted-foreground">
-                        <MapPin className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                        <p>No activities planned for this day</p>
-                        <p className="text-sm">Use the AI assistant to find activities!</p>
+                <DragDropContext onDragEnd={onDragEnd}>
+                  {days.map((day) => (
+                    <div key={day.id} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold flex items-center">
+                          <Calendar className="w-5 h-5 mr-2" />
+                          Day {day.id}
+                          {startDate && (
+                            <span className="ml-2 text-sm text-muted-foreground font-normal">
+                              {format(new Date(startDate.getTime() + (day.id - 1) * 24 * 60 * 60 * 1000), "MMM dd")}
+                            </span>
+                          )}
+                        </h3>
+                        <Button variant="outline" size="sm">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Item
+                        </Button>
                       </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {getItemsByDay(day.id).map((item: any) => (
-                          <div key={item.id} className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
-                            <Clock className="w-4 h-4 text-muted-foreground" />
-                            <div className="flex-1">
-                              <h4 className="font-medium">{item.name}</h4>
-                              <p className="text-sm text-muted-foreground">{item.description}</p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                                  {item.type}
-                                </span>
-                                {item.data.price && (
-                                  <span className="text-xs text-muted-foreground">
-                                    ${item.data.price}
-                                  </span>
-                                )}
-                                {item.data.price_range && (
-                                  <span className="text-xs text-muted-foreground">
-                                    {item.data.price_range}
-                                  </span>
-                                )}
+                      
+                      <Droppable droppableId={day.id.toString()}>
+                        {(provided, snapshot) => (
+                          <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            className={cn(
+                              "min-h-[100px] transition-colors",
+                              snapshot.isDraggingOver && "bg-muted/50 rounded-lg"
+                            )}
+                          >
+                            {getItemsByDay(day.id).length === 0 ? (
+                              <div className="text-center py-8 text-muted-foreground">
+                                <MapPin className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                                <p>No activities planned for this day</p>
+                                <p className="text-sm">Use the AI assistant to find activities!</p>
                               </div>
-                            </div>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => removeItemFromItinerary(item.id)}
-                            >
-                              Remove
-                            </Button>
+                            ) : (
+                              <div className="space-y-3">
+                                {getItemsByDay(day.id).map((item: any, index: number) => (
+                                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                                    {(provided, snapshot) => (
+                                      <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        className={cn(
+                                          "flex items-center space-x-3 p-3 bg-muted rounded-lg transition-transform",
+                                          snapshot.isDragging && "rotate-2 shadow-lg"
+                                        )}
+                                      >
+                                        <Clock className="w-4 h-4 text-muted-foreground" />
+                                        <div className="flex-1">
+                                          <h4 className="font-medium">{item.name}</h4>
+                                          <p className="text-sm text-muted-foreground">{item.description}</p>
+                                          <div className="flex items-center gap-2 mt-1">
+                                            <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                                              {item.type}
+                                            </span>
+                                            {item.data.price && (
+                                              <span className="text-xs text-muted-foreground">
+                                                ${item.data.price}
+                                              </span>
+                                            )}
+                                            {item.data.price_range && (
+                                              <span className="text-xs text-muted-foreground">
+                                                {item.data.price_range}
+                                              </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                        <Button 
+                                          variant="ghost" 
+                                          size="sm"
+                                          onClick={() => removeItemFromItinerary(item.id)}
+                                        >
+                                          Remove
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </Draggable>
+                                ))}
+                              </div>
+                            )}
+                            {provided.placeholder}
                           </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                        )}
+                      </Droppable>
+                    </div>
+                  ))}
+                </DragDropContext>
                 
                 <Button onClick={addDay} variant="outline" className="w-full">
                   <Plus className="w-4 h-4 mr-2" />

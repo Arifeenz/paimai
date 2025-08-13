@@ -13,6 +13,7 @@ interface ItineraryContextType {
   currentItinerary: ItineraryItem[];
   addItemToItinerary: (item: any, type: string, dayNumber?: number) => void;
   removeItemFromItinerary: (itemId: string) => void;
+  moveItemToDay: (itemId: string, newDayNumber: number) => void;
   clearItinerary: () => void;
   getItemsByDay: (dayNumber: number) => ItineraryItem[];
 }
@@ -55,6 +56,16 @@ export const ItineraryProvider: React.FC<ItineraryProviderProps> = ({ children }
     setCurrentItinerary([]);
   };
 
+  const moveItemToDay = (itemId: string, newDayNumber: number) => {
+    setCurrentItinerary(prev => 
+      prev.map(item => 
+        item.id === itemId 
+          ? { ...item, dayNumber: newDayNumber }
+          : item
+      )
+    );
+  };
+
   const getItemsByDay = (dayNumber: number) => {
     return currentItinerary.filter(item => item.dayNumber === dayNumber);
   };
@@ -64,6 +75,7 @@ export const ItineraryProvider: React.FC<ItineraryProviderProps> = ({ children }
       currentItinerary,
       addItemToItinerary,
       removeItemFromItinerary,
+      moveItemToDay,
       clearItinerary,
       getItemsByDay
     }}>
