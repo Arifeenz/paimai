@@ -186,12 +186,16 @@ export const getUserProfile = async (userId: string) => {
 
 // Itineraries
 export const getUserItineraries = async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('User not authenticated');
+
   const { data, error } = await supabase
     .from('itineraries')
     .select(`
       *,
       destinations (name, country)
     `)
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false });
   
   if (error) throw error;
