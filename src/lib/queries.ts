@@ -74,6 +74,27 @@ export const getActivitiesByCategory = async (category: string) => {
   return data;
 };
 
+export const getPopularActivities = async () => {
+  const { data, error } = await supabase
+    .from('activities')
+    .select(`
+      *,
+      destinations (
+        name,
+        country
+      )
+    `)
+    .order('rating', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(10);
+  
+  if (error) {
+    console.error('Error fetching popular activities:', error);
+    throw new Error(`ไม่สามารถโหลดกิจกรรมยอดนิยมได้: ${error.message}`);
+  }
+  return data;
+};
+
 // Hotels
 export const getHotels = async (destinationId?: string) => {
   let query = supabase

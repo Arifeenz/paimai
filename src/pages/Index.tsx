@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { getFeaturedDestinations, getActivitiesByCategory } from '@/lib/queries';
+import { getFeaturedDestinations, getPopularActivities } from '@/lib/queries';
 import { MapPin, Plane, Search, Star, Users, Camera, Utensils, Mountain, Grid3X3 } from 'lucide-react';
 import { DestinationPopup } from '@/components/DestinationPopup';
 import { ActivityPopup } from '@/components/ActivityPopup';
@@ -26,7 +26,7 @@ const Index = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [destinations, activities] = await Promise.all([getFeaturedDestinations(), getActivitiesByCategory('adventure')]);
+        const [destinations, activities] = await Promise.all([getFeaturedDestinations(), getPopularActivities()]);
         setFeaturedDestinations(destinations || []);
         setPopularActivities(activities || []);
       } catch (error) {
