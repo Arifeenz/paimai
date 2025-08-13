@@ -7,7 +7,10 @@ export const getDestinations = async () => {
     .select('*')
     .order('featured', { ascending: false });
   
-  if (error) throw error;
+  if (error) {
+    console.error('Error fetching destinations:', error);
+    throw new Error(`ไม่สามารถโหลดรายการปลายทางได้: ${error.message}`);
+  }
   return data;
 };
 
@@ -18,7 +21,10 @@ export const getFeaturedDestinations = async () => {
     .eq('featured', true)
     .limit(6);
   
-  if (error) throw error;
+  if (error) {
+    console.error('Error fetching featured destinations:', error);
+    throw new Error(`ไม่สามารถโหลดปลายทางแนะนำได้: ${error.message}`);
+  }
   return data;
 };
 
@@ -40,7 +46,10 @@ export const getActivities = async (destinationId?: string) => {
   }
   
   const { data, error } = await query;
-  if (error) throw error;
+  if (error) {
+    console.error('Error fetching activities:', error);
+    throw new Error(`ไม่สามารถโหลดกิจกรรมได้: ${error.message}`);
+  }
   return data;
 };
 
@@ -58,7 +67,10 @@ export const getActivitiesByCategory = async (category: string) => {
     .order('rating', { ascending: false })
     .limit(10);
   
-  if (error) throw error;
+  if (error) {
+    console.error('Error fetching activities by category:', error);
+    throw new Error(`ไม่สามารถโหลดกิจกรรมตามหมวดหมู่ได้: ${error.message}`);
+  }
   return data;
 };
 
@@ -388,15 +400,27 @@ export const createItineraryWithItems = async (
     notes?: string;
   }>
 ) => {
-  // Create itinerary first
-  const newItinerary = await createItinerary(itinerary);
-  
-  // Add items if any
-  if (items.length > 0) {
-    await addItemsToItinerary(newItinerary.id, items);
+  try {
+    // Create itinerary first
+    const newItinerary = await createItinerary(itinerary);
+    
+    // Add items if any
+    if (items.length > 0) {
+      await addItemsToItinerary(newItinerary.id, items);
+    }
+    
+    return newItinerary;
+  } catch (error: any) {
+    console.error('Error creating itinerary with items:', error);
+    if (error.code === '23514') {
+      throw new Error('ข้อมูลกิจกรรมไม่ถูกต้อง กรุณาตรวจสอบประเภทของกิจกรรมที่เพิ่ม');
+    } else if (error.code === '22P02') {
+      throw new Error('รหัสข้อมูลไม่ถูกต้อง กรุณาเลือกกิจกรรมที่มีข้อมูลครบถ้วน');
+    } else if (error.code === '23503') {
+      throw new Error('ไม่พบข้อมูลที่เกี่ยวข้อง กรุณาตรวจสอบการเชื่อมต่อข้อมูล');
+    }
+    throw new Error(`ไม่สามารถบันทึกแผนการเดินทางได้: ${error.message}`);
   }
-  
-  return newItinerary;
 };
 
 // Get user's reviews
@@ -446,7 +470,17 @@ export const createItem = async (table: string, data: any) => {
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) {
+    console.error(`Error creating item in ${table}:`, error);
+    if (error.code === '23514') {
+      throw new Error('ข้อมูลไม่ถูกต้องตามเงื่อนไขที่กำหนด กรุณาตรวจสอบข้อมูลที่กรอก');
+    } else if (error.code === '23505') {
+      throw new Error('ข้อมูลซ้ำกับที่มีอยู่แล้ว กรุณาใช้ข้อมูลอื่น');
+    } else if (error.code === '22P02') {
+      throw new Error('รูปแบบข้อมูลไม่ถูกต้อง กรุณาตรวจสอบข้อมูลที่กรอก');
+    }
+    throw new Error(`ไม่สามารถเพิ่มข้อมูลได้: ${error.message}`);
+  }
   return result;
 };
 

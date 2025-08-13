@@ -43,8 +43,13 @@ const Plan = () => {
     try {
       const itineraries = await getUserItineraries();
       setUserItineraries(itineraries || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading itineraries:', error);
+      toast({
+        title: "ไม่สามารถโหลดแผนการเดินทางได้",
+        description: error.message || "กรุณาลองใหม่อีกครั้ง",
+        variant: "destructive"
+      });
     }
   };
 
@@ -85,11 +90,11 @@ const Plan = () => {
       });
 
       navigate(`/trip/${newItinerary.id}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving itinerary:', error);
       toast({
-        title: "Error saving itinerary",
-        description: "Please try again.",
+        title: "ไม่สามารถบันทึกแผนการเดินทางได้",
+        description: error.message || "กรุณาตรวจสอบข้อมูลและลองใหม่อีกครั้ง",
         variant: "destructive"
       });
     } finally {

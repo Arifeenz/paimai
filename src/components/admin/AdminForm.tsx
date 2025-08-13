@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { X } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface AdminFormProps {
   type: string;
@@ -37,9 +38,18 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
     setLoading(true);
     try {
       await onSave(formData);
+      toast({
+        title: "บันทึกสำเร็จ",
+        description: "ข้อมูลถูกบันทึกเรียบร้อยแล้ว",
+      });
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving:', error);
+      toast({
+        title: "ไม่สามารถบันทึกข้อมูลได้",
+        description: error.message || "กรุณาตรวจสอบข้อมูลและลองใหม่อีกครั้ง",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
