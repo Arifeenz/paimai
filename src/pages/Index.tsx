@@ -81,24 +81,24 @@ const Index = () => {
     duration: '0:18'
   }];
   const categories = [{
-    icon: Mountain,
-    name: 'ผจญภัย',
-    slug: 'adventure',
-    color: 'bg-accent'
-  }, {
     icon: Camera,
     name: 'สถานที่ท่องเที่ยว',
-    slug: 'sightseeing',
+    slug: 'places',
     color: 'bg-primary'
   }, {
+    icon: Mountain,
+    name: 'กิจกรรมและประสบการณ์',
+    slug: 'activities',
+    color: 'bg-accent'
+  }, {
     icon: Utensils,
-    name: 'อาหาร',
-    slug: 'food',
+    name: 'อาหารและเครื่องดื่ม',
+    slug: 'restaurants',
     color: 'bg-secondary'
   }, {
     icon: Users,
-    name: 'วัฒนธรรม',
-    slug: 'cultural',
+    name: 'ที่พัก',
+    slug: 'hotels',
     color: 'bg-muted'
   }];
   return <div className="min-h-screen bg-background">

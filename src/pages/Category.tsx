@@ -22,28 +22,39 @@ const Category = () => {
         let data = [];
         
         switch (category.toLowerCase()) {
+          case 'places':
+            // Get all places and destinations
+            data = await getPlaces();
+            break;
+          case 'activities':
+            // Get all activities
+            const activities = await getActivitiesByCategory('');
+            data = activities;
+            break;
+          case 'restaurants':
+            // Get all restaurants
+            data = await getRestaurants();
+            break;
+          case 'hotels':
+            // Get all hotels
+            data = await getHotels();
+            break;
+          // Keep old category support for backwards compatibility
           case 'adventure':
             data = await getActivitiesByCategory('adventure');
             break;
           case 'sightseeing':
-            // Get places that are attractions
             const places = await getPlaces();
             data = places.filter((place: any) => place.category === 'attraction');
             break;
           case 'food':
-            // Get restaurants and food activities
             const [restaurants, foodActivities] = await Promise.all([
               getRestaurants(),
               getActivitiesByCategory('food')
             ]);
             data = [...restaurants, ...foodActivities];
             break;
-          case 'hotels':
-            // Get hotels
-            data = await getHotels();
-            break;
           case 'cultural':
-            // Get cultural activities and places
             const [culturalActivities, allPlaces] = await Promise.all([
               getActivitiesByCategory('cultural'),
               getPlaces()
@@ -57,7 +68,6 @@ const Category = () => {
             data = [...culturalActivities, ...culturalPlaces];
             break;
           case 'nature':
-            // Get nature activities
             data = await getActivitiesByCategory('nature');
             break;
           default:
@@ -77,11 +87,15 @@ const Category = () => {
 
   const getCategoryTitle = () => {
     switch (category?.toLowerCase()) {
+      case 'places': return 'สถานที่ท่องเที่ยว';
+      case 'activities': return 'กิจกรรมและประสบการณ์';
+      case 'restaurants': return 'อาหารและเครื่องดื่ม';
+      case 'hotels': return 'ที่พัก';
+      // Keep old category support
       case 'adventure': return 'กิจกรรมผจญภัย';
       case 'sightseeing': return 'สถานที่ท่องเที่ยว';
       case 'food': return 'อาหารและร้านอาหาร';
       case 'cultural': return 'ประสบการณ์วัฒนธรรม';
-      case 'hotels': return 'โรงแรมและที่พัก';
       case 'nature': return 'ธรรมชาติ';
       default: return 'หมวดหมู่';
     }
@@ -89,11 +103,15 @@ const Category = () => {
 
   const getCategoryDescription = () => {
     switch (category?.toLowerCase()) {
+      case 'places': return 'สถานที่ต้องชมและสถานที่ท่องเที่ยวที่น่าสนใจ';
+      case 'activities': return 'กิจกรรมและประสบการณ์ที่น่าตื่นเต้น';
+      case 'restaurants': return 'ร้านอาหารและประสบการณ์การรับประทานอาหาร';
+      case 'hotels': return 'ที่พักสบายและโรงแรมคุณภาพ';
+      // Keep old category support
       case 'adventure': return 'กิจกรรมที่ท้าทายและการผจญภัยกลางแจ้ง';
       case 'sightseeing': return 'สถานที่ต้องชมและสถานที่ท่องเที่ยว';
       case 'food': return 'อาหารท้องถิ่นและประสบการณ์การรับประทานอาหาร';
       case 'cultural': return 'สถานที่ทางวัฒนธรรมและประสบการณ์ดั้งเดิม';
-      case 'hotels': return 'ที่พักสบายและที่พักแรม';
       case 'nature': return 'ธรรมชาติและสถานที่ผ่อนคลาย';
       default: return 'สำรวจหมวดหมู่นี้';
     }
@@ -168,7 +186,9 @@ const Category = () => {
                   // Navigate based on item type and category
                   if (category === 'hotels' || item.price_per_night) {
                     navigate(`/hotel/${item.id}`);
-                  } else if (item.category && ['adventure', 'cultural', 'sightseeing'].includes(item.category)) {
+                  } else if (category === 'restaurants' || item.price_range || item.opening_hours) {
+                    navigate(`/restaurant/${item.id}`);
+                  } else if (category === 'activities' || item.duration_hours || item.price) {
                     navigate(`/activity/${item.id}`);
                   } else {
                     navigate(`/place/${item.id}`);
