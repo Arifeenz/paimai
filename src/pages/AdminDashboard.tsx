@@ -169,55 +169,58 @@ const AdminDashboard = () => {
 
     return (
       <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="w-full sm:w-auto">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder={`Search ${type}...`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-64"
+                className="pl-10 w-full sm:w-64"
               />
             </div>
           </div>
-          <Button onClick={() => handleAdd(type)}>
+          <Button onClick={() => handleAdd(type)} className="w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />
-            Add {type.slice(0, -1)}
+            <span className="hidden sm:inline">Add {type.slice(0, -1)}</span>
+            <span className="sm:hidden">เพิ่ม</span>
           </Button>
         </div>
 
         <div className="grid gap-4">
           {filteredItems.map((item) => (
             <Card key={item.id} className="travel-card">
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="font-semibold text-lg">{item.name}</h3>
-                      {item.featured && <Badge>Featured</Badge>}
-                      {item.rating && (
-                        <Badge variant="secondary" className="flex items-center gap-1">
-                          <Star className="w-3 h-3 fill-current" />
-                          {item.rating}
-                        </Badge>
-                      )}
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                      <h3 className="font-semibold text-base sm:text-lg truncate">{item.name}</h3>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {item.featured && <Badge className="text-xs">Featured</Badge>}
+                        {item.rating && (
+                          <Badge variant="secondary" className="flex items-center gap-1 text-xs">
+                            <Star className="w-3 h-3 fill-current" />
+                            {item.rating}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                     
-                    <p className="text-muted-foreground mb-3 line-clamp-2">
+                    <p className="text-muted-foreground mb-3 text-sm line-clamp-2">
                       {item.description}
                     </p>
                     
-                    <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                       {item.country && (
                         <span className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-1" />
+                          <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                           {item.country}
                         </span>
                       )}
                       {item.destinations?.name && (
                         <span className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-1" />
+                          <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                           {item.destinations.name}
                         </span>
                       )}
@@ -239,11 +242,12 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center space-x-2 ml-4">
+                  <div className="flex items-center gap-2 self-end sm:self-start">
                     <Button 
                       variant="outline" 
                       size="sm"
                       onClick={() => handleEdit(type, item)}
+                      className="p-2"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
@@ -251,6 +255,7 @@ const AdminDashboard = () => {
                       variant="outline" 
                       size="sm"
                       onClick={() => handleDelete(type, item.id)}
+                      className="p-2"
                     >
                       <Trash className="w-4 h-4" />
                     </Button>
@@ -284,76 +289,76 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-            <p className="text-muted-foreground">Manage your travel content</p>
+            <h1 className="text-2xl sm:text-3xl font-bold">Content Management</h1>
+            <p className="text-muted-foreground text-sm">จัดการข้อมูลระบบ</p>
           </div>
-          <Button variant="outline" onClick={() => navigate('/')}>
-            Back to Site
+          <Button variant="outline" onClick={() => navigate('/')} className="self-end sm:self-auto">
+            กลับหน้าหลัก
           </Button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6 mb-6">
           <Card className="travel-card">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Destinations</p>
-                  <p className="text-2xl font-bold">{data.destinations.length}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Destinations</p>
+                  <p className="text-lg sm:text-2xl font-bold">{data.destinations.length}</p>
                 </div>
-                <MapPin className="w-8 h-8 text-primary" />
+                <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
           
           <Card className="travel-card">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Activities</p>
-                  <p className="text-2xl font-bold">{data.activities.length}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Activities</p>
+                  <p className="text-lg sm:text-2xl font-bold">{data.activities.length}</p>
                 </div>
-                <Mountain className="w-8 h-8 text-secondary" />
+                <Mountain className="w-6 h-6 sm:w-8 sm:h-8 text-secondary" />
               </div>
             </CardContent>
           </Card>
           
           <Card className="travel-card">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Hotels</p>
-                  <p className="text-2xl font-bold">{data.hotels.length}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Hotels</p>
+                  <p className="text-lg sm:text-2xl font-bold">{data.hotels.length}</p>
                 </div>
-                <Building className="w-8 h-8 text-accent" />
+                <Building className="w-6 h-6 sm:w-8 sm:h-8 text-accent" />
               </div>
             </CardContent>
           </Card>
           
           <Card className="travel-card">
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Places</p>
-                  <p className="text-2xl font-bold">{data.places.length}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Places</p>
+                  <p className="text-lg sm:text-2xl font-bold">{data.places.length}</p>
                 </div>
-                <Users className="w-8 h-8 text-muted-foreground" />
+                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="travel-card">
-            <CardContent className="p-6">
+          <Card className="travel-card lg:col-span-1 col-span-2">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Restaurants</p>
-                  <p className="text-2xl font-bold">{data.restaurants.length}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Restaurants</p>
+                  <p className="text-lg sm:text-2xl font-bold">{data.restaurants.length}</p>
                 </div>
-                <Users className="w-8 h-8 text-orange-500" />
+                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-orange-500" />
               </div>
             </CardContent>
           </Card>
@@ -366,12 +371,12 @@ const AdminDashboard = () => {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger value="destinations">Destinations</TabsTrigger>
-                <TabsTrigger value="activities">Activities</TabsTrigger>
-                <TabsTrigger value="hotels">Hotels</TabsTrigger>
-                <TabsTrigger value="places">Places</TabsTrigger>
-                <TabsTrigger value="restaurants">Restaurants</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
+                <TabsTrigger value="destinations" className="text-xs sm:text-sm">Destinations</TabsTrigger>
+                <TabsTrigger value="activities" className="text-xs sm:text-sm">Activities</TabsTrigger>
+                <TabsTrigger value="hotels" className="text-xs sm:text-sm">Hotels</TabsTrigger>
+                <TabsTrigger value="places" className="text-xs sm:text-sm">Places</TabsTrigger>
+                <TabsTrigger value="restaurants" className="text-xs sm:text-sm">Restaurants</TabsTrigger>
               </TabsList>
               
               <TabsContent value="destinations" className="mt-6">
