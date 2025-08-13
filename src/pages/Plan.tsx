@@ -61,13 +61,15 @@ const Plan = () => {
     setLoading(true);
     try {
       // Convert currentItinerary items to database format
-      const itineraryItems = currentItinerary.map((item, index) => ({
-        item_id: item.data.id,
-        item_type: item.type,
-        day_number: item.dayNumber,
-        order_index: index,
-        notes: ''
-      }));
+      const itineraryItems = currentItinerary
+        .filter(item => item.data && item.data.id) // Filter out items without valid IDs
+        .map((item, index) => ({
+          item_id: item.data.id,
+          item_type: item.type,
+          day_number: item.dayNumber,
+          order_index: index,
+          notes: ''
+        }));
 
       const newItinerary = await createItineraryWithItems({
         name: itineraryName,
