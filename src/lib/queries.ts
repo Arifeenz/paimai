@@ -405,6 +405,8 @@ export const getUserReviews = async () => {
   
   if (!user) throw new Error('User not authenticated');
   
+  console.log('Current user ID:', user.id); // Debug log
+  
   const { data, error } = await supabase
     .from('reviews')
     .select(`
@@ -413,6 +415,8 @@ export const getUserReviews = async () => {
     `)
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
+  
+  console.log('User reviews query result:', { data, error }); // Debug log
   
   if (error) throw error;
   return data;
