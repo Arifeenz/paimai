@@ -25,7 +25,8 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
       activities: { name: '', description: '', category: '', destination_id: '', price: '', duration_hours: '', image_url: '', rating: 0, google_maps_url: '' },
       hotels: { name: '', description: '', address: '', destination_id: '', price_per_night: '', amenities: [], image_url: '', rating: 0, google_maps_url: '' },
       places: { name: '', description: '', category: '', address: '', destination_id: '', image_url: '', rating: 0, google_maps_url: '' },
-      restaurants: { name: '', description: '', category: '', address: '', destination_id: '', price_range: '', opening_hours: '', image_url: '', rating: 0, halal: false, google_maps_url: '' }
+      restaurants: { name: '', description: '', category: '', address: '', destination_id: '', price_range: '', opening_hours: '', image_url: '', rating: 0, halal: false, google_maps_url: '' },
+      transportation: { name: '', description: '', category: '', destination_id: '', price: '', capacity: '', features: [], availability_hours: '', contact_info: '', image_url: '', rating: 0 }
     };
     
     return defaults[type] || {};
@@ -533,6 +534,123 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
           </>
         );
 
+      case 'transportation':
+        return (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="name">ชื่อ</Label>
+                <Input
+                  id="name"
+                  value={formData.name || ''}
+                  onChange={(e) => handleChange('name', e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="category">หมวดหมู่</Label>
+                <Select value={formData.category || ''} onValueChange={(value) => handleChange('category', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="เลือกหมวดหมู่" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="car-rental">เช่ารถ</SelectItem>
+                    <SelectItem value="private-car">รถส่วนตัว</SelectItem>
+                    <SelectItem value="bus">รถบัส</SelectItem>
+                    <SelectItem value="van">รถตู้</SelectItem>
+                    <SelectItem value="motorbike">รถจักรยานยนต์</SelectItem>
+                    <SelectItem value="tour-bus">รถทัวร์</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="description">คำอธิบาย</Label>
+              <Textarea
+                id="description"
+                value={formData.description || ''}
+                onChange={(e) => handleChange('description', e.target.value)}
+                rows={3}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="destination_id">จุดหมายปลายทาง</Label>
+                <Select value={formData.destination_id || ''} onValueChange={(value) => handleChange('destination_id', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="เลือกจุดหมาย" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {destinations.map((dest) => (
+                      <SelectItem key={dest.id} value={dest.id}>{dest.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="capacity">ความจุ (คน)</Label>
+                <Input
+                  id="capacity"
+                  type="number"
+                  value={formData.capacity || ''}
+                  onChange={(e) => handleChange('capacity', parseInt(e.target.value) || 0)}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="price">ราคา (฿)</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  value={formData.price || ''}
+                  onChange={(e) => handleChange('price', parseFloat(e.target.value) || 0)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="availability_hours">เวลาให้บริการ</Label>
+                <Input
+                  id="availability_hours"
+                  value={formData.availability_hours || ''}
+                  onChange={(e) => handleChange('availability_hours', e.target.value)}
+                  placeholder="เช่น 8:00 - 20:00"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="contact_info">ข้อมูลการติดต่อ</Label>
+                <Input
+                  id="contact_info"
+                  value={formData.contact_info || ''}
+                  onChange={(e) => handleChange('contact_info', e.target.value)}
+                  placeholder="เบอร์โทร หรือ Line ID"
+                />
+              </div>
+              <div>
+                <Label htmlFor="rating">Rating (0-5 ดาว)</Label>
+                <Input
+                  id="rating"
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={formData.rating || 0}
+                  onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="image_url">URL รูปภาพ</Label>
+              <Input
+                id="image_url"
+                value={formData.image_url || ''}
+                onChange={(e) => handleChange('image_url', e.target.value)}
+              />
+            </div>
+          </>
+        );
+
       default:
         return null;
     }
@@ -546,7 +664,8 @@ const AdminForm = ({ type, item, destinations = [], onSave, onClose }: AdminForm
             {item ? 'แก้ไข' : 'เพิ่ม'} {type === 'destinations' ? 'จุดหมายปลายทาง' : 
              type === 'activities' ? 'กิจกรรม' : 
              type === 'hotels' ? 'โรงแรม' : 
-             type === 'places' ? 'สถานที่' : 'ร้านอาหาร'}
+             type === 'places' ? 'สถานที่' : 
+             type === 'restaurants' ? 'ร้านอาหาร' : 'การเดินทาง'}
           </h2>
           <Button variant="outline" size="sm" onClick={onClose}>
             <X className="w-4 h-4" />

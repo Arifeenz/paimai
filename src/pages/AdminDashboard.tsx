@@ -17,7 +17,8 @@ import {
   Plus,
   Search,
   Edit,
-  Trash
+  Trash,
+  Plane
 } from 'lucide-react';
 import { getUserProfile } from '@/lib/queries';
 import { supabase } from '@/integrations/supabase/client';
@@ -36,7 +37,8 @@ const AdminDashboard = () => {
     activities: [],
     hotels: [],
     places: [],
-    restaurants: []
+    restaurants: [],
+    transportation: []
   });
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -77,12 +79,13 @@ const AdminDashboard = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [destinations, activities, hotels, places, restaurants] = await Promise.all([
+      const [destinations, activities, hotels, places, restaurants, transportation] = await Promise.all([
         supabase.from('destinations').select('*').order('created_at', { ascending: false }),
         supabase.from('activities').select('*, destinations(name)').order('created_at', { ascending: false }),
         supabase.from('hotels').select('*, destinations(name)').order('created_at', { ascending: false }),
         supabase.from('places').select('*, destinations(name)').order('created_at', { ascending: false }),
-        (supabase as any).from('restaurants').select('*').order('created_at', { ascending: false })
+        (supabase as any).from('restaurants').select('*').order('created_at', { ascending: false }),
+        supabase.from('transportation').select('*').order('created_at', { ascending: false })
       ]);
 
       setData({
@@ -90,7 +93,8 @@ const AdminDashboard = () => {
         activities: activities.data || [],
         hotels: hotels.data || [],
         places: places.data || [],
-        restaurants: restaurants.data || []
+        restaurants: restaurants.data || [],
+        transportation: transportation.data || []
       });
     } catch (error) {
       console.error('Error loading data:', error);
@@ -302,7 +306,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-6 mb-6">
           <Card className="travel-card">
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
@@ -351,7 +355,7 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="travel-card lg:col-span-1 col-span-2">
+          <Card className="travel-card">
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -359,6 +363,18 @@ const AdminDashboard = () => {
                   <p className="text-lg sm:text-2xl font-bold">{data.restaurants.length}</p>
                 </div>
                 <Users className="w-6 h-6 sm:w-8 sm:h-8 text-orange-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="travel-card">
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs sm:text-sm text-muted-foreground">การเดินทาง</p>
+                  <p className="text-lg sm:text-2xl font-bold">{data.transportation.length}</p>
+                </div>
+                <Plane className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500" />
               </div>
             </CardContent>
           </Card>
@@ -371,12 +387,13 @@ const AdminDashboard = () => {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
                 <TabsTrigger value="destinations" className="text-xs sm:text-sm">จุดหมาย</TabsTrigger>
                 <TabsTrigger value="activities" className="text-xs sm:text-sm">กิจกรรม</TabsTrigger>
                 <TabsTrigger value="hotels" className="text-xs sm:text-sm">โรงแรม</TabsTrigger>
                 <TabsTrigger value="places" className="text-xs sm:text-sm">สถานที่</TabsTrigger>
                 <TabsTrigger value="restaurants" className="text-xs sm:text-sm">ร้านอาหาร</TabsTrigger>
+                <TabsTrigger value="transportation" className="text-xs sm:text-sm">การเดินทาง</TabsTrigger>
               </TabsList>
               
               <TabsContent value="destinations" className="mt-6">
@@ -397,6 +414,10 @@ const AdminDashboard = () => {
 
               <TabsContent value="restaurants" className="mt-6">
                 {renderTable(data.restaurants, 'restaurants')}
+              </TabsContent>
+
+              <TabsContent value="transportation" className="mt-6">
+                {renderTable(data.transportation, 'transportation')}
               </TabsContent>
             </Tabs>
           </CardContent>
