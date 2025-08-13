@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,11 +20,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Plane, User, LogOut, Settings, Shield } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { cn } from '@/lib/utils';
 import { getUserProfile } from '@/lib/queries';
 
 export const Navbar = () => {
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [userProfile, setUserProfile] = useState<any>(null);
 
@@ -65,17 +68,17 @@ export const Navbar = () => {
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                <Link to="/">หน้าแรก</Link>
+                <Link to="/">{t('nav.home')}</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                <Link to="/plan">วางแผนการเดินทาง</Link>
+                <Link to="/plan">{t('nav.plan')}</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             {user && (
               <NavigationMenuItem>
-                <NavigationMenuTrigger>การเดินทาง</NavigationMenuTrigger>
+                <NavigationMenuTrigger>{t('nav.myTrips')}</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid gap-3 p-4 w-[400px]">
                     <div className="row-span-3">
@@ -85,7 +88,7 @@ export const Navbar = () => {
                           to="/my-trips"
                         >
                           <div className="mb-2 mt-4 text-lg font-medium">
-                            การเดินทางของฉัน
+                            {t('nav.myTrips')}
                           </div>
                           <p className="text-sm leading-tight text-muted-foreground">
                             ดูและจัดการแผนการเดินทางทั้งหมดของคุณ
@@ -100,7 +103,7 @@ export const Navbar = () => {
             {userProfile?.role === 'admin' && (
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                  <Link to="/admin-dashboard">จัดการระบบ</Link>
+                  <Link to="/admin-dashboard">{t('nav.admin')}</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             )}
@@ -109,6 +112,7 @@ export const Navbar = () => {
 
         {/* User Menu / Login Button */}
         <div className="flex items-center space-x-4">
+          <LanguageSwitcher />
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -140,21 +144,21 @@ export const Navbar = () => {
                 <DropdownMenuItem asChild>
                   <Link to="/profile" className="flex items-center">
                     <User className="mr-2 h-4 w-4" />
-                    <span>โปรไฟล์</span>
+                    <span>{t('nav.profile')}</span>
                   </Link>
                 </DropdownMenuItem>
                 {userProfile?.role === 'admin' && (
                   <DropdownMenuItem asChild>
                     <Link to="/admin-dashboard" className="flex items-center">
                       <Shield className="mr-2 h-4 w-4" />
-                      <span>จัดการระบบ</span>
+                      <span>{t('nav.admin')}</span>
                     </Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem asChild>
                   <Link to="/settings" className="flex items-center">
                     <Settings className="mr-2 h-4 w-4" />
-                    <span>ตั้งค่า</span>
+                    <span>{t('nav.settings')}</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleSignOut} className="flex items-center">
@@ -166,7 +170,7 @@ export const Navbar = () => {
           ) : (
             <div className="flex items-center space-x-2">
               <Button variant="ghost" asChild>
-                <Link to="/auth">เข้าสู่ระบบ</Link>
+                <Link to="/auth">{t('nav.auth')}</Link>
               </Button>
               <Button asChild>
                 <Link to="/auth">สมัครสมาชิก</Link>

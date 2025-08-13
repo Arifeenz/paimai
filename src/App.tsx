@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ItineraryProvider } from "@/contexts/ItineraryContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import VoiceAssistant from "@/components/chat/VoiceAssistant";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -30,8 +31,9 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <ItineraryProvider>
-        <TooltipProvider>
+      <LanguageProvider>
+        <ItineraryProvider>
+          <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -62,8 +64,9 @@ const App = () => (
             <VoiceAssistant />
           </div>
         </BrowserRouter>
-      </TooltipProvider>
-      </ItineraryProvider>
+        </TooltipProvider>
+        </ItineraryProvider>
+      </LanguageProvider>
     </AuthProvider>
   </QueryClientProvider>
 );
