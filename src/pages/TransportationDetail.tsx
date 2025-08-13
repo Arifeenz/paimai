@@ -23,13 +23,7 @@ const TransportationDetail = () => {
       try {
         const { data, error } = await supabase
           .from('transportation')
-          .select(`
-            *,
-            destinations (
-              name,
-              country
-            )
-          `)
+          .select('*')
           .eq('id', id)
           .single();
 
@@ -121,7 +115,7 @@ const TransportationDetail = () => {
           <div>
             <h1 className="text-3xl font-bold">{transportation.name}</h1>
             <p className="text-muted-foreground">
-              {transportation.destinations?.name}, {transportation.destinations?.country}
+              {transportation.category}
             </p>
           </div>
         </div>
@@ -191,8 +185,8 @@ const TransportationDetail = () => {
                 <div className="space-y-3">
                   {/* Type */}
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Type</span>
-                    <Badge className="capitalize">{transportation.type}</Badge>
+                    <span className="text-sm text-muted-foreground">Category</span>
+                    <Badge className="capitalize">{transportation.category}</Badge>
                   </div>
 
                   {/* Capacity */}
@@ -203,13 +197,13 @@ const TransportationDetail = () => {
                     </div>
                   )}
 
-                  {/* Price per day */}
-                  {transportation.price_per_day && (
+                  {/* Price */}
+                  {transportation.price && (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Price per day</span>
+                      <span className="text-sm text-muted-foreground">Price</span>
                       <div className="flex items-center gap-1 text-lg font-semibold text-primary">
                         <DollarSign className="w-4 h-4" />
-                        {transportation.price_per_day}
+                        ฿{transportation.price}
                       </div>
                     </div>
                   )}
@@ -230,11 +224,15 @@ const TransportationDetail = () => {
                 <div className="flex items-start gap-2">
                   <MapPin className="w-4 h-4 mt-1 text-muted-foreground" />
                   <div>
-                    <p className="font-medium">{transportation.destinations?.name}</p>
-                    <p className="text-sm text-muted-foreground">{transportation.destinations?.country}</p>
-                    {transportation.pickup_location && (
+                    <p className="font-medium">{transportation.category}</p>
+                    {transportation.contact_info && (
+                      <p className="text-sm text-muted-foreground">
+                        {transportation.contact_info}
+                      </p>
+                    )}
+                    {transportation.availability_hours && (
                       <p className="text-sm text-muted-foreground mt-1">
-                        Pickup: {transportation.pickup_location}
+                        Available: {transportation.availability_hours}
                       </p>
                     )}
                   </div>
