@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
@@ -29,8 +28,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
   });
   const [loading, setLoading] = useState(false);
 
-const provinces = ['ยะลา'];
-
+  const provinces = ['ยะลา'];
 
   const travelStyles = [
     { value: 'adventure', label: language === 'th' ? 'ผจญภัย' : 'Adventure' },
@@ -49,7 +47,7 @@ const provinces = ['ยะลา'];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.province || !formData.startDate || !formData.endDate || !formData.travelStyle || !formData.budget) {
       toast({
         title: language === 'th' ? 'กรุณากรอกข้อมูลให้ครบ' : 'Please fill in all fields',
@@ -59,22 +57,41 @@ const provinces = ['ยะลา'];
     }
 
     setLoading(true);
-    
-    // Simulate AI trip generation
-    setTimeout(() => {
+
+    try {
+      const res = await fetch("/api/generate-trip-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await res.json();
+
       toast({
         title: language === 'th' ? 'สร้างแผนการเดินทางสำเร็จ!' : 'Trip plan generated successfully!',
-        description: language === 'th' ? 'กำลังนำคุณไปยังแผนการเดินทาง...' : 'Redirecting to your trip plan...'
+        description: language === 'th' ? 'กำลังนำคุณไปยังแผน...' : 'Redirecting to your trip plan...'
       });
-      
-      // Navigate to the plan page with generated data
-      navigate('/plan', { 
-        state: { 
-          aiGenerated: true, 
-          tripData: formData 
-        } 
+
+      navigate("/plan", {
+        state: {
+          aiGenerated: true,
+          tripData: {
+            ...formData,
+            plan: result.plan, // ✅ แผนจาก GPT
+          },
+        },
       });
-    }, 2000);
+
+    } catch (err) {
+      console.error("Error generating trip:", err);
+      toast({
+        title: language === 'th' ? 'เกิดข้อผิดพลาด' : 'Error occurred',
+        description: language === 'th' ? 'ไม่สามารถสร้างแผนได้ กรุณาลองใหม่' : 'Unable to generate trip plan. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -92,44 +109,33 @@ const provinces = ['ยะลา'];
           <p className="text-muted-foreground">
             {language === 'th' 
               ? 'กรุณาข้อมูลดำลำงเพื่อให้ AI สร้างแผนการเดินทางที่เหมาะกับคุณ'
-              : 'Provide your preferences and let AI create the perfect trip for you'
-            }
+              : 'Provide your preferences and let AI create the perfect trip for you'}
           </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Province Selection */}
+            {/* Province */}
             <div className="space-y-2">
-              <Label className="flex items-center">
-                <span>{language === 'th' ? 'จังหวัดที่ต้องการเที่ยว' : 'Province to Visit'}</span>
-              </Label>
+              <Label>{language === 'th' ? 'จังหวัดที่ต้องการเที่ยว' : 'Province to Visit'}</Label>
               <Select value={formData.province} onValueChange={(value) => setFormData(prev => ({ ...prev, province: value }))}>
                 <SelectTrigger>
                   <SelectValue placeholder={language === 'th' ? 'เลือกจังหวัด' : 'Select Province'} />
                 </SelectTrigger>
                 <SelectContent>
                   {provinces.map(province => (
-                    <SelectItem key={province} value={province}>
-                      {province}
-                    </SelectItem>
+                    <SelectItem key={province} value={province}>{province}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Date Selection */}
+            {/* Dates */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>{language === 'th' ? 'วันเริ่มต้น' : 'Start Date'}</Label>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !formData.startDate && "text-muted-foreground"
-                      )}
-                    >
+                    <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !formData.startDate && "text-muted-foreground")}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {formData.startDate ? format(formData.startDate, "PPP") : (
                         <span>{language === 'th' ? 'เลือกวันเริ่มต้น' : 'Pick start date'}</span>
@@ -152,13 +158,7 @@ const provinces = ['ยะลา'];
                 <Label>{language === 'th' ? 'วันสิ้นสุด' : 'End Date'}</Label>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !formData.endDate && "text-muted-foreground"
-                      )}
-                    >
+                    <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !formData.endDate && "text-muted-foreground")}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {formData.endDate ? format(formData.endDate, "PPP") : (
                         <span>{language === 'th' ? 'เลือกวันสิ้นสุด' : 'Pick end date'}</span>
@@ -188,9 +188,7 @@ const provinces = ['ยะลา'];
                 </SelectTrigger>
                 <SelectContent>
                   {travelStyles.map(style => (
-                    <SelectItem key={style.value} value={style.value}>
-                      {style.label}
-                    </SelectItem>
+                    <SelectItem key={style.value} value={style.value}>{style.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -205,29 +203,18 @@ const provinces = ['ยะลา'];
                 </SelectTrigger>
                 <SelectContent>
                   {budgetRanges.map(budget => (
-                    <SelectItem key={budget.value} value={budget.value}>
-                      {budget.label}
-                    </SelectItem>
+                    <SelectItem key={budget.value} value={budget.value}>{budget.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Action Buttons */}
+            {/* Actions */}
             <div className="flex gap-3 pt-4">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={onBack}
-                className="flex-1"
-              >
+              <Button type="button" variant="outline" onClick={onBack} className="flex-1">
                 {language === 'th' ? 'ย้อนกลับ' : 'Back'}
               </Button>
-              <Button 
-                type="submit" 
-                disabled={loading}
-                className="flex-1 bg-gradient-to-r from-primary to-secondary text-white"
-              >
+              <Button type="submit" disabled={loading} className="flex-1 bg-gradient-to-r from-primary to-secondary text-white">
                 {loading ? (
                   <span className="flex items-center">
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />

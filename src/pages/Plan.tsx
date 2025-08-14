@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { Calendar, Clock, MapPin, Plus, Save, ArrowLeft, Search, Hotel, CalendarIcon, User, Sparkles } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
@@ -16,6 +17,15 @@ import { toast } from '@/hooks/use-toast';
 import { useItinerary } from '@/contexts/ItineraryContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import AiTripPlanner from '@/components/plan/AiTripPlanner';
+
+interface AITripData {
+  province: string;
+  startDate: string;
+  endDate: string;
+  travelStyle: string;
+  budget: string;
+  plan?: Record<string, string[]>; // เช่น { '2025-08-14': ['กิจกรรม1', 'กิจกรรม2'] }
+}
 
 const Plan = () => {
   const { user } = useAuth();
@@ -32,6 +42,7 @@ const Plan = () => {
   ]);
   const [userItineraries, setUserItineraries] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [aiTripData, setAiTripData] = useState<AITripData | null>(null);
 
   useEffect(() => {
     loadUserItineraries();
@@ -50,9 +61,31 @@ const Plan = () => {
       setPlanningMode('manual');
       const tripData = location.state.tripData;
       if (tripData) {
+        setAiTripData(tripData);
         setItineraryName(`${tripData.province} Trip`);
-        setStartDate(tripData.startDate);
-        setEndDate(tripData.endDate);
+        
+        // Parse dates from AI trip data
+        if (tripData.startDate) {
+          setStartDate(new Date(tripData.startDate));
+        }
+        if (tripData.endDate) {
+          setEndDate(new Date(tripData.endDate));
+        }
+        
+        // Calculate number of days if we have both dates
+        if (tripData.startDate && tripData.endDate) {
+          const start = new Date(tripData.startDate);
+          const end = new Date(tripData.endDate);
+          const diffTime = Math.abs(end.getTime() - start.getTime());
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+          
+          // Create days array based on trip duration
+          const newDays = Array.from({ length: diffDays }, (_, i) => ({
+            id: i + 1,
+            items: []
+          }));
+          setDays(newDays);
+        }
       }
     }
   }, [location.state]);
@@ -96,7 +129,7 @@ const Plan = () => {
 
       const newItinerary = await createItineraryWithItems({
         name: itineraryName,
-        style: 'mixed',
+        style: aiTripData?.travelStyle || 'mixed',
         user_id: user.id,
         start_date: startDate ? format(startDate, 'yyyy-MM-dd') : null,
         end_date: endDate ? format(endDate, 'yyyy-MM-dd') : null
@@ -224,6 +257,77 @@ const Plan = () => {
     </div>
   );
 
+  const renderAITripPlan = () => {
+    if (!aiTripData) return null;
+
+    return (
+      <Card className="mb-8 travel-card">
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-5 h-5 text-secondary" />
+            <CardTitle>
+              {language === 'th' ? 'แผนการเดินทางที่สร้างโดย AI' : 'AI-Generated Trip Plan'}
+            </CardTitle>
+          </div>
+          <p className="text-muted-foreground">
+            <span className="font-medium">{aiTripData.province}</span> • 
+            <span className="mx-2">
+              {startDate && endDate ? 
+                `${format(startDate, 'PPP')} - ${format(endDate, 'PPP')}` : 
+                'Date not specified'
+              }
+            </span> • 
+            <span className="mx-2 capitalize">{aiTripData.travelStyle}</span> • 
+            <span className="mx-2">{aiTripData.budget}</span>
+          </p>
+        </CardHeader>
+        <CardContent>
+          {aiTripData.plan && Object.keys(aiTripData.plan).length > 0 ? (
+            <div className="space-y-6">
+              {Object.entries(aiTripData.plan).map(([date, activities], index) => (
+                <div key={date}>
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center text-sm font-medium">
+                      {index + 1}
+                    </div>
+                    <h3 className="font-semibold text-lg">
+                      {format(new Date(date), 'EEEE, MMMM dd, yyyy')}
+                    </h3>
+                  </div>
+                  <div className="ml-11 space-y-2">
+                    {activities.map((activity, i) => (
+                      <div key={i} className="flex items-start space-x-2">
+                        <Clock className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <p className="text-sm">{activity}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {index < Object.entries(aiTripData.plan!).length - 1 && (
+                    <Separator className="my-6" />
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <Sparkles className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <p className="text-muted-foreground">
+                {language === 'th'
+                  ? 'ไม่มีรายละเอียดของแผน AI (อยู่ระหว่างพัฒนา)' 
+                  : 'No AI plan details available (under development)'}
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                {language === 'th'
+                  ? 'คุณสามารถเพิ่มกิจกรรมด้วยตนเองในส่วนด้านล่าง'
+                  : 'You can manually add activities in the section below'}
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    );
+  };
+
   if (planningMode === 'choose') {
     return renderChooseMode();
   }
@@ -260,23 +364,35 @@ const Plan = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Itinerary Builder */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-8">
+            {/* AI Trip Plan Display */}
+            {aiTripData && renderAITripPlan()}
+
+            {/* Manual Planning Section */}
             <Card className="travel-card">
               <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <User className="w-5 h-5" />
+                  <span>
+                    {language === 'th' ? 'วางแผนการเดินทางด้วยตัวเอง' : 'Manual Trip Planning'}
+                  </span>
+                </CardTitle>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="itinerary-name">Itinerary Name</Label>
+                    <Label htmlFor="itinerary-name">
+                      {language === 'th' ? 'ชื่อแผนการเดินทาง' : 'Itinerary Name'}
+                    </Label>
                     <Input
                       id="itinerary-name"
                       value={itineraryName}
                       onChange={(e) => setItineraryName(e.target.value)}
-                      placeholder="My Amazing Trip"
+                      placeholder={language === 'th' ? 'ทริปสุดยอดของฉัน' : 'My Amazing Trip'}
                     />
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Start Date</Label>
+                      <Label>{language === 'th' ? 'วันเริ่มต้น' : 'Start Date'}</Label>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -287,7 +403,9 @@ const Plan = () => {
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
+                            {startDate ? format(startDate, "PPP") : 
+                              <span>{language === 'th' ? 'เลือกวันที่' : 'Pick a date'}</span>
+                            }
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
@@ -303,7 +421,7 @@ const Plan = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label>End Date</Label>
+                      <Label>{language === 'th' ? 'วันสิ้นสุด' : 'End Date'}</Label>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -314,7 +432,9 @@ const Plan = () => {
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
+                            {endDate ? format(endDate, "PPP") : 
+                              <span>{language === 'th' ? 'เลือกวันที่' : 'Pick a date'}</span>
+                            }
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
@@ -339,7 +459,7 @@ const Plan = () => {
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold flex items-center">
                           <Calendar className="w-5 h-5 mr-2" />
-                          Day {day.id}
+                          {language === 'th' ? `วันที่ ${day.id}` : `Day ${day.id}`}
                           {startDate && (
                             <span className="ml-2 text-sm text-muted-foreground font-normal">
                               {format(new Date(startDate.getTime() + (day.id - 1) * 24 * 60 * 60 * 1000), "MMM dd")}
@@ -348,7 +468,7 @@ const Plan = () => {
                         </h3>
                         <Button variant="outline" size="sm">
                           <Plus className="w-4 h-4 mr-2" />
-                          Add Item
+                          {language === 'th' ? 'เพิ่มรายการ' : 'Add Item'}
                         </Button>
                       </div>
                       
@@ -365,8 +485,16 @@ const Plan = () => {
                             {getItemsByDay(day.id).length === 0 ? (
                               <div className="text-center py-8 text-muted-foreground">
                                 <MapPin className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                                <p>No activities planned for this day</p>
-                                <p className="text-sm">Use the AI assistant to find activities!</p>
+                                <p>
+                                  {language === 'th' 
+                                    ? 'ยังไม่มีกิจกรรมในวันนี้' 
+                                    : 'No activities planned for this day'}
+                                </p>
+                                <p className="text-sm">
+                                  {language === 'th' 
+                                    ? 'ใช้เครื่องมือค้นหาเพื่อหากิจกรรม!' 
+                                    : 'Use the search tools to find activities!'}
+                                </p>
                               </div>
                             ) : (
                               <div className="space-y-3">
@@ -407,7 +535,7 @@ const Plan = () => {
                                           size="sm"
                                           onClick={() => removeItemFromItinerary(item.id)}
                                         >
-                                          Remove
+                                          {language === 'th' ? 'ลบ' : 'Remove'}
                                         </Button>
                                       </div>
                                     )}
@@ -425,7 +553,7 @@ const Plan = () => {
                 
                 <Button onClick={addDay} variant="outline" className="w-full">
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Another Day
+                  {language === 'th' ? 'เพิ่มวัน' : 'Add Another Day'}
                 </Button>
               </CardContent>
             </Card>
@@ -436,7 +564,9 @@ const Plan = () => {
             {/* Quick Actions */}
             <Card className="travel-card">
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
+                <CardTitle>
+                  {language === 'th' ? 'เครื่องมือช่วยเหลือ' : 'Quick Actions'}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button 
@@ -445,7 +575,7 @@ const Plan = () => {
                   onClick={handleFindActivities}
                 >
                   <Search className="w-4 h-4 mr-2" />
-                  Find Activities
+                  {language === 'th' ? 'หากิจกรรม' : 'Find Activities'}
                 </Button>
                 <Button 
                   variant="outline" 
@@ -453,7 +583,7 @@ const Plan = () => {
                   onClick={handleFindFood}
                 >
                   <MapPin className="w-4 h-4 mr-2" />
-                  Find Restaurants
+                  {language === 'th' ? 'หาร้านอาหาร' : 'Find Restaurants'}
                 </Button>
                 <Button 
                   variant="outline" 
@@ -461,7 +591,7 @@ const Plan = () => {
                   onClick={handleFindHotels}
                 >
                   <Hotel className="w-4 h-4 mr-2" />
-                  Find Hotels
+                  {language === 'th' ? 'หาที่พัก' : 'Find Hotels'}
                 </Button>
               </CardContent>
             </Card>
@@ -469,12 +599,16 @@ const Plan = () => {
             {/* Your Itineraries */}
             <Card className="travel-card">
               <CardHeader>
-                <CardTitle>Your Itineraries</CardTitle>
+                <CardTitle>
+                  {language === 'th' ? 'แผนการเดินทางของคุณ' : 'Your Itineraries'}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 {userItineraries.length === 0 ? (
                   <p className="text-sm text-muted-foreground text-center py-4">
-                    No saved itineraries yet
+                    {language === 'th' 
+                      ? 'ยังไม่มีแผนการเดินทางที่บันทึกไว้' 
+                      : 'No saved itineraries yet'}
                   </p>
                 ) : (
                   <div className="space-y-3">
@@ -486,7 +620,8 @@ const Plan = () => {
                       >
                         <h4 className="font-medium text-sm">{itinerary.name}</h4>
                         <p className="text-xs text-muted-foreground">
-                          {itinerary.destinations?.name || 'Multiple destinations'}
+                          {itinerary.destinations?.name || 
+                           (language === 'th' ? 'หลายจุดหมาย' : 'Multiple destinations')}
                         </p>
                       </div>
                     ))}
