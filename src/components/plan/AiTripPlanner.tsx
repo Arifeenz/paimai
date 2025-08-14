@@ -105,20 +105,14 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
         body: JSON.stringify(formData),
       });
 
-      let result;
-
-      try {
-        result = await res.json(); // พยายาม parse เป็น JSON
-      } catch (err) {
-        const text = await res.text(); // ไม่ใช่ JSON → log ข้อความธรรมดา
-        console.error("❌ Response is not valid JSON:", text);
-        throw new Error("Invalid JSON response from server");
-      }
-
       if (!res.ok) {
-        console.error("❌ Server returned error status:", result);
-        throw new Error(result?.error || "Server Error");
+        // อ่านเป็น text ครั้งเดียว
+        const errorText = await res.text();
+        console.error("❌ Server returned error text:", errorText);
+        throw new Error("Server Error: " + errorText);
       }
+
+      const result = await res.json();
 
       toast({
         title:
@@ -151,7 +145,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
         variant: "destructive",
       });
     } finally {
-      setLoading(false); // ✅ อยู่ท้ายสุดเหมือนเดิม
+      setLoading(false);
     }
   };
 
