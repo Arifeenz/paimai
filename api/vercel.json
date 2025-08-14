@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "api/generate-trip-plan.ts": {
-      "runtime": "nodejs18.x"
-    }
-  }
-}
