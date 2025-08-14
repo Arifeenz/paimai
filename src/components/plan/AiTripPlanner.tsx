@@ -29,7 +29,9 @@ interface AiTripPlannerProps {
 // 🧮 ฟังก์ชันคำนวณจำนวนวัน
 const calculateDays = (start?: Date, end?: Date): number => {
   if (!start || !end) return 1;
-  const diff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  const diff = Math.ceil(
+    (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+  );
   return Math.max(diff + 1, 1); // อย่างน้อย 1 วัน
 };
 
@@ -61,7 +63,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
 
   const budgetRanges = [
     {
-      value: "low",
+      value: "budget", // 🔁 จาก "low"
       label:
         language === "th"
           ? "ประหยัด (0-2,000 บาท/วัน)"
@@ -75,7 +77,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
           : "Moderate (2,000-5,000 THB/day)",
     },
     {
-      value: "high",
+      value: "luxury", // 🔁 จาก "high"
       label:
         language === "th"
           ? "หรูหรา (5,000+ บาท/วัน)"
@@ -85,6 +87,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("📌 SUBMIT FORM", formData); // ✅ ตรวจว่าฟอร์มมีข้อมูลครบ
 
     if (
       !formData.province ||
@@ -93,6 +96,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
       !formData.travelStyle ||
       !formData.budget
     ) {
+      console.log("⚠️ Form incomplete");
       toast({
         title:
           language === "th"
@@ -104,26 +108,33 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
     }
 
     setLoading(true);
+    console.log("🚀 Sending request to backend...");
 
     try {
-      const res = await fetch("https://trip-backend-production-d18c.up.railway.app/generate-trip-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-    province: formData.province,
-    style: formData.travelStyle, // ✅ backend ต้องการ style
-    budget: formData.budget,     // ❗ ตรวจว่าค่านี้เป็นค่าจริง (low/moderate/high)
-    days: calculateDays(formData.startDate, formData.endDate), // ✅ ส่งจำนวนวัน
-      });
+      const res = await fetch(
+        "https://trip-backend-production-d18c.up.railway.app/generate-trip-plan",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            province: formData.province,
+            style: formData.travelStyle,
+            budget: formData.budget,
+            days: calculateDays(formData.startDate, formData.endDate),
+          }),
+        }
+      );
+
+      console.log("📥 Response received:", res.status);
 
       if (!res.ok) {
-        // อ่านเป็น text ครั้งเดียว
         const errorText = await res.text();
         console.error("❌ Server returned error text:", errorText);
         throw new Error("Server Error: " + errorText);
       }
 
       const result = await res.json();
+      console.log("✅ Trip Plan:", result);
 
       toast({
         title:
@@ -156,6 +167,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
         variant: "destructive",
       });
     } finally {
+      console.log("⏹️ Done loading");
       setLoading(false);
     }
   };
