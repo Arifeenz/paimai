@@ -6,8 +6,9 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY!
 )
 
+// 🔁 เปลี่ยนจาก edge → nodejs เพื่อให้ใช้ OpenAI SDK ได้
 export const config = {
-  runtime: 'edge',
+  runtime: 'nodejs',
 }
 
 export default async function handler(req: Request) {
@@ -19,10 +20,12 @@ export default async function handler(req: Request) {
   const { province, startDate, endDate, style, budget } = body
 
   if (!province || !startDate || !endDate || !style || !budget) {
-    return new Response(JSON.stringify({ error: 'Missing input' }), { status: 400 })
+    return new Response(JSON.stringify({ error: 'Missing input' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    })
   }
 
-  // ดึงข้อมูลจาก Supabase
   const { data: places, error } = await supabase
     .from('places')
     .select('*')
@@ -30,7 +33,10 @@ export default async function handler(req: Request) {
 
   if (error) {
     console.error('Supabase Error:', error)
-    return new Response(JSON.stringify({ error: 'Failed to fetch places' }), { status: 500 })
+    return new Response(JSON.stringify({ error: 'Failed to fetch places' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    })
   }
 
   const placeList = places?.map(p => p.name).join(', ') || 'ไม่มีข้อมูลสถานที่'
@@ -51,15 +57,23 @@ export default async function handler(req: Request) {
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    messages: [{ role: 'user', content: prompt }],
-  })
-
-  const aiPlan = completion.choices[0].message.content
+  let aiPlan = '';
+  try {
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [{ role: 'user', content: prompt }],
+    })
+    aiPlan = completion.choices[0].message.content || ''
+  } catch (err) {
+    console.error("❌ OpenAI error:", err)
+    return new Response(JSON.stringify({ error: "AI generation failed" }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
 
   return new Response(JSON.stringify({ plan: aiPlan }), {
     status: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' }
   })
 }
