@@ -61,7 +61,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
 
   const budgetRanges = [
     {
-      value: "budget",
+      value: "low",
       label:
         language === "th"
           ? "ประหยัด (0-2,000 บาท/วัน)"
@@ -75,7 +75,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
           : "Moderate (2,000-5,000 THB/day)",
     },
     {
-      value: "luxury",
+      value: "high",
       label:
         language === "th"
           ? "หรูหรา (5,000+ บาท/วัน)"
@@ -112,7 +112,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
         body: JSON.stringify({
     province: formData.province,
     style: formData.travelStyle, // ✅ backend ต้องการ style
-    budget: formData.budget,
+    budget: formData.budget,     // ❗ ตรวจว่าค่านี้เป็นค่าจริง (low/moderate/high)
     days: calculateDays(formData.startDate, formData.endDate), // ✅ ส่งจำนวนวัน
       });
 
