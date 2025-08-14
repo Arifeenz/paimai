@@ -9,6 +9,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "target": "ES2015", // หรือ ES2020 หากต้องการฟีเจอร์ใหม่กว่า
+    "module": "ESNext", // รองรับการ import/export แบบ ES Modules
     "noImplicitAny": false,
     "noUnusedParameters": false,
     "skipLibCheck": true,
