@@ -59,7 +59,7 @@ export const Navbar = () => {
             <Plane className="h-6 w-6 text-primary-foreground" />
           </div>
           <span className="hidden font-bold text-xl text-gradient sm:inline-block">
-            TravelAI
+            PaiMai
           </span>
         </Link>
 

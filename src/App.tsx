@@ -5,10 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ItineraryProvider } from "@/contexts/ItineraryContext";
-import { LanguageProvider } from "@/contexts/LanguageContext";
 import VoiceAssistant from "@/components/chat/VoiceAssistant";
 import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Plan from "./pages/Plan";
@@ -31,42 +29,35 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <LanguageProvider>
-        <ItineraryProvider>
-          <TooltipProvider>
+      <ItineraryProvider>
+        <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="min-h-screen flex flex-col">
-            <Navbar />
-            <main className="flex-1">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/plan" element={<Plan />} />
-                <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                <Route path="/category/:category" element={<Category />} />
-                <Route path="/activity/:id" element={<ActivityDetail />} />
-                <Route path="/destination/:id" element={<DestinationDetail />} />
-                <Route path="/restaurant/:id" element={<RestaurantDetail />} />
-                <Route path="/hotel/:id" element={<HotelDetail />} />
-                <Route path="/place/:id" element={<PlaceDetail />} />
-                <Route path="/transportation/:id" element={<TransportationDetail />} />
-                <Route path="/trip/:id" element={<TripDetail />} />
-                <Route path="/my-trips" element={<MyTrips />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/settings" element={<Settings />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-            <Footer />
-            <VoiceAssistant />
-          </div>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/plan" element={<Plan />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/category/:category" element={<Category />} />
+            <Route path="/activity/:id" element={<ActivityDetail />} />
+            <Route path="/destination/:id" element={<DestinationDetail />} />
+            <Route path="/restaurant/:id" element={<RestaurantDetail />} />
+            <Route path="/hotel/:id" element={<HotelDetail />} />
+            <Route path="/place/:id" element={<PlaceDetail />} />
+            <Route path="/transportation/:id" element={<TransportationDetail />} />
+            <Route path="/trip/:id" element={<TripDetail />} />
+            <Route path="/my-trips" element={<MyTrips />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <VoiceAssistant />
         </BrowserRouter>
-        </TooltipProvider>
-        </ItineraryProvider>
-      </LanguageProvider>
+      </TooltipProvider>
+      </ItineraryProvider>
     </AuthProvider>
   </QueryClientProvider>
 );
