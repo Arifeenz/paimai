@@ -1,29 +1,23 @@
+// ✅ Serverless (Node.js) API สำหรับ Vercel
 import { OpenAI } from 'openai'
 import { createClient } from '@supabase/supabase-js'
+
+// ใช้ require() ไม่ได้ เพราะเป็น ESM ดังนั้นเขียนแบบนี้
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_ANON_KEY!
 )
 
-// 🔁 เปลี่ยนจาก edge → nodejs เพื่อให้ใช้ OpenAI SDK ได้
-export const config = {
-  runtime: 'nodejs',
-}
-
-export default async function handler(req: Request) {
+export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
-    return new Response('Method Not Allowed', { status: 405 })
+    return res.status(405).json({ error: 'Method Not Allowed' })
   }
 
-  const body = await req.json()
-  const { province, startDate, endDate, style, budget } = body
+  const { province, startDate, endDate, style, budget } = req.body
 
   if (!province || !startDate || !endDate || !style || !budget) {
-    return new Response(JSON.stringify({ error: 'Missing input' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' }
-    })
+    return res.status(400).json({ error: 'Missing input' })
   }
 
   const { data: places, error } = await supabase
@@ -33,10 +27,7 @@ export default async function handler(req: Request) {
 
   if (error) {
     console.error('Supabase Error:', error)
-    return new Response(JSON.stringify({ error: 'Failed to fetch places' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    })
+    return res.status(500).json({ error: 'Failed to fetch places' })
   }
 
   const placeList = places?.map(p => p.name).join(', ') || 'ไม่มีข้อมูลสถานที่'
@@ -53,27 +44,23 @@ export default async function handler(req: Request) {
 - เวลา...
 - คำแนะนำ...
 วันที่ 2: ...
-`
+  `
 
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
-
-  let aiPlan = '';
   try {
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY!,
+    })
+
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],
     })
-    aiPlan = completion.choices[0].message.content || ''
-  } catch (err) {
-    console.error("❌ OpenAI error:", err)
-    return new Response(JSON.stringify({ error: "AI generation failed" }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    })
-  }
 
-  return new Response(JSON.stringify({ plan: aiPlan }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' }
-  })
+    const aiPlan = completion.choices[0].message.content
+
+    return res.status(200).json({ plan: aiPlan })
+  } catch (err) {
+    console.error("❌ OpenAI Error:", err)
+    return res.status(500).json({ error: 'AI generation failed' })
+  }
 }
