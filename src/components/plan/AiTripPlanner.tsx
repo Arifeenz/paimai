@@ -99,7 +99,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/generate-trip-plan", {
+      const res = await fetch("https://trip-backend-production-d18c.up.railway.app/generate-trip-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
