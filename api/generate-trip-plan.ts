@@ -2,12 +2,16 @@
 import { OpenAI } from 'openai'
 import { createClient } from '@supabase/supabase-js'
 
-// ใช้ require() ไม่ได้ เพราะเป็น ESM ดังนั้นเขียนแบบนี้
-
+// สร้าง Supabase client
 const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
+  process.env.VITE_SUPABASE_URL!,
+  process.env.VITE_SUPABASE_ANON_KEY!
 )
+
+// สร้าง OpenAI client เพียงครั้งเดียว
+const openai = new OpenAI({
+  apiKey: process.env.VITE_OPENAI_API_KEY!,
+})
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
@@ -26,7 +30,7 @@ export default async function handler(req: any, res: any) {
     .eq('province', province)
 
   if (error) {
-    console.error('Supabase Error:', error)
+    console.error('❌ Supabase Error:', error)
     return res.status(500).json({ error: 'Failed to fetch places' })
   }
 
@@ -44,13 +48,9 @@ export default async function handler(req: any, res: any) {
 - เวลา...
 - คำแนะนำ...
 วันที่ 2: ...
-  `
+`
 
   try {
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY!,
-    })
-
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],
