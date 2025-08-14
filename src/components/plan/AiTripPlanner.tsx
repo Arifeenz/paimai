@@ -26,6 +26,13 @@ interface AiTripPlannerProps {
   onBack: () => void;
 }
 
+// 🧮 ฟังก์ชันคำนวณจำนวนวัน
+const calculateDays = (start?: Date, end?: Date): number => {
+  if (!start || !end) return 1;
+  const diff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  return Math.max(diff + 1, 1); // อย่างน้อย 1 วัน
+};
+
 const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
@@ -102,7 +109,11 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
       const res = await fetch("https://trip-backend-production-d18c.up.railway.app/generate-trip-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+    province: formData.province,
+    style: formData.travelStyle, // ✅ backend ต้องการ style
+    budget: formData.budget,
+    days: calculateDays(formData.startDate, formData.endDate), // ✅ ส่งจำนวนวัน
       });
 
       if (!res.ok) {
