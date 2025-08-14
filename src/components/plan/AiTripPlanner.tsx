@@ -29,11 +29,8 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
   });
   const [loading, setLoading] = useState(false);
 
-  const provinces = [
-    'กรุงเทพมหานคร', 'เชียงใหม่', 'เชียงราย', 'ภูเก็ต', 'กระบี่', 'สุราษฎร์ธานี',
-    'ระยอง', 'จันทบุรี', 'เพชรบุรี', 'ประจวบคีรีขันธ์', 'นครศรีธรรมราช', 'สงขลา',
-    'ขอนแก่น', 'อุดรธานี', 'นครราชสีมา', 'บุรีรัมย์', 'อุบลราชธานี', 'กาญจนบุรี'
-  ];
+const provinces = ['ยะลา'];
+
 
   const travelStyles = [
     { value: 'adventure', label: language === 'th' ? 'ผจญภัย' : 'Adventure' },
