@@ -24,21 +24,19 @@ const translations = {
     'nav.signOut': 'ออกจากระบบ',
     
     // Home page
-    'home.hero.title': 'ค้นหาการผจญภัยครั้งต่อไปของคุณ',
-    'home.hero.subtitle': 'ค้นพบสถานที่ที่น่าทึ่ง กิจกรรมที่น่าตื่นเต้น และสร้างความทรงจำที่ไม่รู้ลืม',
-    'home.search.placeholder': 'ค้นหาสถานที่ท่องเที่ยว กิจกรรม หรือประสบการณ์...',
-    'home.search.button': 'ค้นหา',
-    'home.categories.title': 'หมวดหมู่การท่องเที่ยว',
-    'home.videos.title': 'เรื่องราวการเดินทาง',
+    'home.hero.title': 'ค้นหาจุดหมายปลายทางในฝันของคุณ',
+    'home.hero.subtitle': 'สำรวจสถานที่ท่องเที่ยวที่น่าทึ่งทั่วประเทศไทย',
+    'home.planTrip.button': 'เริ่มวางแผนการเดินทาง',
+    'home.categories.title': 'หมวดหมู่',
+    'home.categories.question': 'คุณกำลังมองหาอะไร?',
+    'home.videos.title': 'วิดีโอแนะนำ',
     'home.destinations.title': 'จุดหมายปลายทางยอดนิยม',
-    'home.activities.title': 'กิจกรรมยอดนิยม',
+    'home.activities.title': 'กิจกรรมแนะนำ',
     
     // Categories
-    'category.destinations': 'จุดหมายปลายทาง',
-    'category.activities': 'กิจกรรม', 
-    'category.restaurants': 'ร้านอาหาร',
-    'category.hotels': 'โรงแรม',
-    'category.places': 'สถานที่',
+    'category.places': 'ที่เที่ยวและกิจกรรม',
+    'category.restaurants': 'อาหารและเครื่องดื่ม',
+    'category.hotels': 'ที่พัก',
     'category.transportation': 'การเดินทาง',
     
     // Footer
@@ -96,21 +94,19 @@ const translations = {
     'nav.signOut': 'Sign Out',
     
     // Home page
-    'home.hero.title': 'Discover Your Next Adventure',
-    'home.hero.subtitle': 'Find amazing places, exciting activities, and create unforgettable memories',
-    'home.search.placeholder': 'Search for destinations, activities, or experiences...',
-    'home.search.button': 'Search',
-    'home.categories.title': 'Travel Categories',
-    'home.videos.title': 'Travel Stories',
-    'home.destinations.title': 'Featured Destinations',
-    'home.activities.title': 'Popular Activities',
+    'home.hero.title': 'Find Your Dream Destination',
+    'home.hero.subtitle': 'Explore amazing tourist attractions across Thailand',
+    'home.planTrip.button': 'Start Planning Your Trip',
+    'home.categories.title': 'Categories',
+    'home.categories.question': 'What are you looking for?',
+    'home.videos.title': 'Featured Videos',
+    'home.destinations.title': 'Popular Destinations',
+    'home.activities.title': 'Recommended Activities',
     
     // Categories
-    'category.destinations': 'Destinations',
-    'category.activities': 'Activities',
-    'category.restaurants': 'Restaurants',
-    'category.hotels': 'Hotels',
-    'category.places': 'Places',
+    'category.places': 'Places & Activities',
+    'category.restaurants': 'Food & Drinks',
+    'category.hotels': 'Accommodation',
     'category.transportation': 'Transportation',
     
     // Footer

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calendar, Clock, MapPin, Plus, Save, ArrowLeft, Search, Hotel, CalendarIcon } from 'lucide-react';
+import { Calendar, Clock, MapPin, Plus, Save, ArrowLeft, Search, Hotel, CalendarIcon, User, Sparkles } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { format } from 'date-fns';
@@ -14,11 +14,16 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { createItineraryWithItems, getUserItineraries } from '@/lib/queries';
 import { toast } from '@/hooks/use-toast';
 import { useItinerary } from '@/contexts/ItineraryContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import AiTripPlanner from '@/components/plan/AiTripPlanner';
 
 const Plan = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { t, language } = useLanguage();
   const { currentItinerary, getItemsByDay, removeItemFromItinerary, moveItemToDay, reorderItems } = useItinerary();
+  const [planningMode, setPlanningMode] = useState<'choose' | 'manual' | 'ai'>('choose');
   const [itineraryName, setItineraryName] = useState('My Trip');
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
@@ -38,6 +43,19 @@ const Plan = () => {
       return;
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    // Check if we're coming from AI trip generation
+    if (location.state?.aiGenerated) {
+      setPlanningMode('manual');
+      const tripData = location.state.tripData;
+      if (tripData) {
+        setItineraryName(`${tripData.province} Trip`);
+        setStartDate(tripData.startDate);
+        setEndDate(tripData.endDate);
+      }
+    }
+  }, [location.state]);
 
   const loadUserItineraries = async () => {
     try {
@@ -143,21 +161,100 @@ const Plan = () => {
     return null;
   }
 
+  const renderChooseMode = () => (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="max-w-4xl mx-auto p-4 text-center">
+        <h1 className="text-4xl font-bold mb-4">
+          {language === 'th' ? 'วางแผนการเดินทางของคุณ' : 'Plan Your Trip'}
+        </h1>
+        <p className="text-muted-foreground text-lg mb-12">
+          {language === 'th' 
+            ? 'เลือกวิธีการวางแผนที่เหมาะกับคุณ' 
+            : 'Choose how you\'d like to plan your trip'
+          }
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+          {/* Manual Planning */}
+          <Card className="cursor-pointer hover:scale-105 transition-transform travel-card p-6" onClick={() => setPlanningMode('manual')}>
+            <CardContent className="text-center space-y-4">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto">
+                <User className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold">
+                {language === 'th' ? 'วางแผนเอง' : 'Plan Yourself'}
+              </h3>
+              <p className="text-muted-foreground">
+                {language === 'th' 
+                  ? 'สร้างแผนการเดินทางด้วยตัวคุณเอง เลือกสถานที่และกิจกรรมที่ต้องการ'
+                  : 'Create your own itinerary. Choose places and activities that interest you.'
+                }
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* AI Planning */}
+          <Card className="cursor-pointer hover:scale-105 transition-transform travel-card p-6" onClick={() => setPlanningMode('ai')}>
+            <CardContent className="text-center space-y-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center mx-auto">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold">
+                {language === 'th' ? 'ให้ AI ช่วยจัดทริป' : 'Let AI Plan'}
+              </h3>
+              <p className="text-muted-foreground">
+                {language === 'th' 
+                  ? 'ให้ปัญญาประดิษฐ์สร้างแผนการเดินทางที่เหมาะกับคุณ'
+                  : 'Let artificial intelligence create a personalized trip plan for you.'
+                }
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/')}
+          className="mt-8"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          {language === 'th' ? 'กลับ' : 'Back'}
+        </Button>
+      </div>
+    </div>
+  );
+
+  if (planningMode === 'choose') {
+    return renderChooseMode();
+  }
+
+  if (planningMode === 'ai') {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="max-w-6xl mx-auto p-4 py-8">
+          <AiTripPlanner onBack={() => setPlanningMode('choose')} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto p-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" onClick={() => navigate('/')}>
+            <Button variant="ghost" onClick={() => setPlanningMode('choose')}>
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              {language === 'th' ? 'กลับ' : 'Back'}
             </Button>
-            <h1 className="text-3xl font-bold">Trip Planner</h1>
+            <h1 className="text-3xl font-bold">
+              {language === 'th' ? 'วางแผนการเดินทาง' : 'Trip Planner'}
+            </h1>
           </div>
           <Button onClick={saveItinerary} disabled={loading}>
             <Save className="w-4 h-4 mr-2" />
-            Save Itinerary
+            {language === 'th' ? 'บันทึกแผนการเดินทาง' : 'Save Itinerary'}
           </Button>
         </div>
 

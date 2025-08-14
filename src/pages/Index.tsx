@@ -85,32 +85,22 @@ const Index = () => {
     icon: Camera,
     name: t('category.places'),
     slug: 'places',
-    color: 'bg-primary'
-  }, {
-    icon: Grid3X3,
-    name: t('category.activities'),
-    slug: 'activities',
-    color: 'bg-secondary'
+    color: 'bg-blue-500'
   }, {
     icon: Utensils,
     name: t('category.restaurants'),
     slug: 'restaurants',
-    color: 'bg-accent'
+    color: 'bg-orange-500'
   }, {
     icon: Users,
     name: t('category.hotels'),
     slug: 'hotels',
-    color: 'bg-destructive'
+    color: 'bg-green-500'
   }, {
     icon: Plane,
     name: t('category.transportation'),
     slug: 'transportation',
-    color: 'bg-muted'
-  }, {
-    icon: Mountain,
-    name: t('category.destinations'),
-    slug: 'destinations',
-    color: 'bg-primary/80'
+    color: 'bg-purple-500'
   }];
   return <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -126,23 +116,17 @@ const Index = () => {
             {t('home.hero.subtitle')}
           </p>
           
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-              <Input 
-                type="text" 
-                placeholder={t('home.search.placeholder')} 
-                value={searchQuery} 
-                onChange={e => setSearchQuery(e.target.value)} 
-                className="pl-12 h-14 bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/70" 
-              />
-            </div>
-            <Button type="submit" size="lg" className="h-14 px-8 bg-white text-primary hover:bg-white/90">
-              <Plane className="mr-2 w-5 h-5" />
-              {t('home.search.button')}
+          {/* Trip Planning Button */}
+          <div className="max-w-2xl mx-auto">
+            <Button 
+              size="lg" 
+              className="h-14 px-8 bg-white text-primary hover:bg-white/90 w-full text-lg"
+              onClick={() => navigate('/plan')}
+            >
+              <Plane className="mr-3 w-6 h-6" />
+              {t('home.planTrip.button')}
             </Button>
-          </form>
+          </div>
           
           {!user && <div className="mt-8">
               
@@ -153,22 +137,24 @@ const Index = () => {
       {/* Category Icon */}
       
 
-      {/* Categories Grid */}
-      <section id="categories-grid" className="px-4 bg-muted/30 py-[30px]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">{t('home.categories.title')}</h2>
+      {/* Question Section */}
+      <section className="px-4 bg-muted/30 py-[30px]">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">{t('home.categories.question')}</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {categories.map(category => {
-            const Icon = category.icon;
-            return <Card key={category.name} className="cursor-pointer hover:scale-105 transition-transform travel-card" onClick={() => navigate(`/category/${category.slug}`)}>
+              const Icon = category.icon;
+              return (
+                <Card key={category.name} className="cursor-pointer hover:scale-105 transition-transform travel-card" onClick={() => navigate(`/category/${category.slug}`)}>
                   <CardContent className="p-6 text-center">
-                    <div className={`w-12 h-12 ${category.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
-                      <Icon className="w-6 h-6 text-white" />
+                    <div className={`w-16 h-16 ${category.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                      <Icon className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="font-semibold text-lg">{category.name}</h3>
+                    <h3 className="font-semibold text-base">{category.name}</h3>
                   </CardContent>
-                </Card>;
-          })}
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
