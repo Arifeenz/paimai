@@ -44,7 +44,8 @@ const Category = () => {
             break;
           // Keep old category support for backwards compatibility
           case 'places':
-            data = await getPlaces();
+            data = await getActivities();
+            console.log('Places data loaded:', data);
             break;
           case 'activities':
             const allActivities = await getActivitiesByCategory('');
