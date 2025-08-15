@@ -110,31 +110,63 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
     setLoading(true);
     console.log("🚀 Sending request to backend...");
 
+    // ✅ เพิ่ม timeout และ error handling ที่ดีขึ้น
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 วินาที timeout
+
     try {
+      const requestData = {
+        province: formData.province,
+        style: formData.travelStyle,
+        budget: formData.budget,
+        days: calculateDays(formData.startDate, formData.endDate),
+      };
+
+      console.log("📤 Request data:", requestData);
+
       const res = await fetch(
         "https://trip-backend-production-d18c.up.railway.app/generate-trip-plan",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            province: formData.province,
-            style: formData.travelStyle,
-            budget: formData.budget,
-            days: calculateDays(formData.startDate, formData.endDate),
-          }),
+          headers: { 
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(requestData),
+          signal: controller.signal,
         }
       );
 
-      console.log("📥 Response received:", res.status);
+      clearTimeout(timeoutId);
+      console.log("📥 Response received:", res.status, res.statusText);
+
+      // ✅ ตรวจสอบ response headers
+      console.log("📋 Response headers:", Object.fromEntries(res.headers.entries()));
 
       if (!res.ok) {
-        const errorText = await res.text();
-        console.error("❌ Server returned error text:", errorText);
-        throw new Error("Server Error: " + errorText);
+        let errorMessage = `HTTP ${res.status}: ${res.statusText}`;
+        
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.message || errorData.error || errorMessage;
+          console.error("❌ Server error data:", errorData);
+        } catch (jsonError) {
+          // หาก response ไม่ใช่ JSON
+          const errorText = await res.text();
+          errorMessage = errorText || errorMessage;
+          console.error("❌ Server error text:", errorText);
+        }
+        
+        throw new Error(errorMessage);
       }
 
       const result = await res.json();
-      console.log("✅ Trip Plan:", result);
+      console.log("✅ Trip Plan received:", result);
+
+      // ✅ ตรวจสอบว่า response มี plan หรือไม่
+      if (!result.plan) {
+        throw new Error("No trip plan returned from server");
+      }
 
       toast({
         title:
@@ -147,23 +179,37 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
             : "Redirecting to your trip plan...",
       });
 
-      navigate("/plan", {
-        state: {
-          aiGenerated: true,
-          tripData: {
-            ...formData,
-            plan: result.plan,
+      // ✅ เพิ่ม delay เล็กน้อยก่อน navigate
+      setTimeout(() => {
+        navigate("/plan", {
+          state: {
+            aiGenerated: true,
+            tripData: {
+              ...formData,
+              plan: result.plan,
+              metadata: result.metadata,
+            },
           },
-        },
-      });
+        });
+      }, 500);
+
     } catch (err) {
+      clearTimeout(timeoutId);
       console.error("❌ Error generating trip:", err);
+      
+      let errorMessage = "เกิดข้อผิดพลาดไม่ทราบสาเหตุ";
+      
+      if (err.name === 'AbortError') {
+        errorMessage = language === "th" 
+          ? "คำขอใช้เวลานานเกินไป กรุณาลองใหม่" 
+          : "Request timeout. Please try again.";
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
       toast({
         title: language === "th" ? "เกิดข้อผิดพลาด" : "Error occurred",
-        description:
-          language === "th"
-            ? "ไม่สามารถสร้างแผนได้ กรุณาลองใหม่"
-            : "Unable to generate trip plan. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -186,7 +232,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
           </CardTitle>
           <p className="text-muted-foreground">
             {language === "th"
-              ? "กรุณาข้อมูลดำลำงเพื่อให้ AI สร้างแผนการเดินทางที่เหมาะกับคุณ"
+              ? "กรุณาใส่ข้อมูลดำเนินการเพื่อให้ AI สร้างแผนการเดินทางที่เหมาะกับคุณ"
               : "Provide your preferences and let AI create the perfect trip for you"}
           </p>
         </CardHeader>
