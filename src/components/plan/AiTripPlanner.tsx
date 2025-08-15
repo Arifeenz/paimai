@@ -25,6 +25,8 @@ import { toast } from "@/hooks/use-toast";
 interface AiTripPlannerProps {
   onBack: () => void;
 }
+const API_URL = "https://trip-backend-production-d18c.up.railway.app/generate-trip-plan";
+
 
 // 🧮 ฟังก์ชันคำนวณจำนวนวัน
 const calculateDays = (start?: Date, end?: Date): number => {
@@ -123,18 +125,19 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
       };
 
       console.log("📤 Request data:", requestData);
+      console.log("🌍 กำลังยิง API ไปยัง:", API_URL);
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/generate-trip-plan`,
-        {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify(requestData),
-          signal: controller.signal,
-        }
-      );
+
+      const res = await fetch(API_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+  body: JSON.stringify(requestData),
+  signal: controller.signal,
+});
+
 
       clearTimeout(timeoutId);
       console.log("📥 Response received:", res.status, res.statusText);
