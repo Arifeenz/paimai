@@ -124,8 +124,7 @@ const AiTripPlanner = ({ onBack }: AiTripPlannerProps) => {
 
       console.log("📤 Request data:", requestData);
 
-      const res = await fetch(
-        "https://trip-backend-production-d18c.up.railway.app/generate-trip-plan",
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/generate-trip-plan`,
         {
           method: "POST",
           headers: { 
